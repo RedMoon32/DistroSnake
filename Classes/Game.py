@@ -66,7 +66,6 @@ class Game:
     def run(self):
         food = Food(self.width, self.height)
         while True:
-            self.snakes.printing()
             self.snakes.change_to = self.event_loop(self.snakes.change_to)
             self.snakes.validate_direction_and_change()
             self.snakes.change_head_position()

@@ -3,8 +3,6 @@ import pygame
 
 
 class Snake:
-    def printing(self):
-        print(self.head_pos)
 
     def __init__(self, name, width=720, height=460):
         self.name = name
