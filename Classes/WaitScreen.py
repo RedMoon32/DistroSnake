@@ -14,7 +14,7 @@ class WaitSreen:
         screen = pygame.display.set_mode((self.width, self.height))
         smallfont = pygame.font.SysFont('monaco', 35)
 
-        host_text = smallfont.render(' Waiting for others', True, (255, 255, 255))
+        host_text = smallfont.render(' Play (потом будет Waiting for others)', True, (255, 255, 255))
 
         player_pos = 1 / 6
         move_parameter = 1 / 12 * self.height
