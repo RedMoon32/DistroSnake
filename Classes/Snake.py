@@ -9,18 +9,24 @@ class Snake:
         self.width = width
         self.height = height
         self.intend = 60
-        # TODO: рандомить вдали от остальных змей
         self.head_pos = self.randomize_head_position(self.width, self.height, self.intend)  # [x, y]
         self.body = self.randomize_body_position(self.head_pos)
         self.color = self.randomize_color()
         self.direction = self.randomize_init_direction(self.body)
         self.change_to = self.direction
+        self.alive = True
+        self.died_from_wall = False
+        self.died_from_snake = False
+        self.died_from_self = False
+
+    def __eq__(self, other):
+        return self.body == other
 
     def randomize_head_position(self, width, height, intend):
         width /= 10
         height /= 10
         intend /= 10
-        return [random.randint(intend, width - intend)*10, random.randint(intend, height - intend)*10]
+        return [random.randint(intend, width - intend) * 10, random.randint(intend, height - intend) * 10]
 
     def randomize_body_position(self, head_pos):
         s_w = head_pos[0]
@@ -154,15 +160,29 @@ class Snake:
                 play_surface, self.color, pygame.Rect(
                     pos[0], pos[1], 10, 10))
 
-    def check_for_boundaries(self, game_over, screen_width, screen_height):
+    def check_for_boundaries(self, snakes, game_over, screen_width, screen_height):
+        snakes_copy = [s.body for s in snakes.copy()]
+        l_copy = [j for i in snakes_copy for j in i]
+        l_copy.remove(self.body[0])
         if any((
                 self.head_pos[0] > screen_width - 10
                 or self.head_pos[0] < 0,
                 self.head_pos[1] > screen_height - 10
                 or self.head_pos[1] < 0
         )):
+            self.alive = False
+            self.died_from_wall = True
+            self.head_pos = [-10, -10]
+            self.body = [[-10, -10]]
             game_over()
-        for block in self.body[1:]:
+        for block in l_copy:
             if (block[0] == self.head_pos[0] and
                     block[1] == self.head_pos[1]):
+                self.alive = False
+                if block in self.body[1:]:
+                    self.died_from_self = True
+                else:
+                    self.died_from_snake = True
+                self.head_pos = [-10, -10]
+                self.body = [[-10, -10]]
                 game_over()
