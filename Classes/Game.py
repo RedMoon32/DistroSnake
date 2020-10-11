@@ -6,6 +6,7 @@ import pygame
 import csv
 import time
 
+from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Food import Food
 from Classes.Snake import Snake
 
@@ -39,7 +40,7 @@ class Game:
                     change_to = "DOWN"
                 elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
-                    sys.exit()
+                    # sys.exit()
         return change_to
 
     def refresh_screen(self):
@@ -70,7 +71,7 @@ class Game:
             results += '{0}. Score: {1}\n'.format(snake.name, self.scores[i])
 
         s_font = pygame.font.SysFont('monaco', int(self.width / 25))
-        self.blit_text(self.play_surface, results, (20, 20), s_font)
+        self.blit_text(self.play_surface, results, (int(self.height/16), int(self.width/23)), s_font)
 
     def game_over(self):
         self.show_scores()
@@ -87,7 +88,7 @@ class Game:
             self.write_to_csv(self.logger_file_path)
             time.sleep(2)
             pygame.quit()
-            sys.exit()
+            # sys.exit()
 
             # Кнопка для выхода, которую я не хз как делать
             # done = False
@@ -164,10 +165,9 @@ class Game:
                     and var % self.time_interval < 0.055:
                 self.write_to_csv(self.logger_file_path)
 
-
-# crazy test
-if __name__ == '__main__':
-    snakes = [Snake("dimon", width=720, height=460),
-              Snake("rinat", width=720, height=460)]
-    # Snake("sanya", width=720, height=460)]
-    game = Game(snakes, width=720, height=460).run()
+# # crazy test
+# if __name__ == '__main__':
+#     snakes = [Snake("dimon", width=720, height=460),
+#               Snake("rinat", width=720, height=460)]
+#     # Snake("sanya", width=720, height=460)]
+#     game = Game(snakes, width=720, height=460).run()

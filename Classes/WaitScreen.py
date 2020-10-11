@@ -12,7 +12,7 @@ class WaitSreen:
 
     def run(self):
         screen = pygame.display.set_mode((self.width, self.height))
-        smallfont = pygame.font.SysFont('monaco', 35)
+        smallfont = pygame.font.SysFont('monaco', int(self.width/19))
 
         host_text = smallfont.render(' Play (потом будет Waiting for others)', True, (255, 255, 255))
 
@@ -21,8 +21,7 @@ class WaitSreen:
         _width = 1 / 10 * self.width
 
         position = 3 / 4
-        done = False
-        while not done:
+        while True:
             mouse = pygame.mouse.get_pos()
             for ev in pygame.event.get():
                 if ev.type == pygame.MOUSEBUTTONDOWN:
@@ -32,7 +31,7 @@ class WaitSreen:
 
                     if position * self.width <= mouse[0] <= position * 6 / 5 * self.width \
                             and position * self.height <= mouse[1] <= position * self.height + move_parameter:
-                        return done, pygame.quit()
+                        return False, pygame.quit()
 
             pygame.draw.rect(screen,
                              (100, 100, 100),

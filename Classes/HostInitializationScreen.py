@@ -4,7 +4,7 @@ import pygame
 
 
 class HostInitializationScreen:
-    def __init__(self, width=640, height=480):
+    def __init__(self, width=720, height=460):
         self.width = width
         self.height = height
         self.size = (self.width, self.height)
@@ -15,7 +15,7 @@ class HostInitializationScreen:
 
     def run(self):
         screen = pygame.display.set_mode(self.size)
-        font = pygame.font.Font(None, 32)
+        font = pygame.font.Font(None, int(2*self.width/45))
         input_box = pygame.Rect(5 * self.width / 16, 5 * self.height / 16,
                                 self.width, self.height / 15)
         active, text, done = False, '', False
@@ -41,18 +41,7 @@ class HostInitializationScreen:
             screen.blit(font.render('Players: ', True, (255, 255, 255)),
                         (self.height / 1.7, self.width / 6))
 
-
-            # txt_surface = font.render(text, True, color)
-            # input_box.w = max(self.width / 3, txt_surface.get_width() + 10)
-            # screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
-            # pygame.draw.rect(screen, color, input_box, 2)
-
             pygame.display.flip()
 
     def host_init(self):
-        return random.randint(10,20)
-
-if __name__ == '__main__':
-    auth = HostInitializationScreen()
-    res = auth.run()
-    print(res)
+        return random.randint(10, 20)

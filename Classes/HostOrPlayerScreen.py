@@ -2,7 +2,7 @@ import pygame
 
 
 class HostOrPlayerScreen:
-    def __init__(self, width=640, height=480):
+    def __init__(self, width=720, height=460):
         self.width = width
         self.height = height
         self.size = (self.width, self.height)
@@ -12,7 +12,7 @@ class HostOrPlayerScreen:
 
     def run(self):
         screen = pygame.display.set_mode((self.width, self.height))
-        smallfont = pygame.font.SysFont('monaco', 35)
+        smallfont = pygame.font.SysFont('monaco', int(self.width/19))
 
         quit_text = smallfont.render('Quit ', True, (255, 255, 255))
         player_text = smallfont.render('Player ', True, (255, 255, 255))
@@ -22,6 +22,7 @@ class HostOrPlayerScreen:
         player_pos = 1 / 6
         move_parameter = 1 / 12 * self.height
         _width = 1 / 10 * self.width
+        _length = int(0.0076*self.height * move_parameter)
 
         while True:
             mouse = pygame.mouse.get_pos()
@@ -41,18 +42,18 @@ class HostOrPlayerScreen:
 
             pygame.draw.rect(screen,
                              (255, 0, 0),
-                             [position * self.width, position * self.height, int(3.5 * move_parameter), move_parameter])
+                             [position * self.width, position * self.height, _length, move_parameter])
             screen.blit(quit_text, (position * self.width + _width/2, position * self.height))
 
             pygame.draw.rect(screen,
                              (100, 100, 100),
-                             [self.width * player_pos, self.height * player_pos, int(3.5 * move_parameter),
+                             [self.width * player_pos, self.height * player_pos, _length,
                               move_parameter])
             screen.blit(player_text, (self.width * player_pos + _width/2, self.height * player_pos))
 
             pygame.draw.rect(screen,
                              (100, 100, 100),
-                             [self.width * player_pos + self.width/2, self.height * player_pos, int(3.5 * move_parameter),
+                             [self.width * player_pos + self.width/2, self.height * player_pos, _length,
                               move_parameter])
             screen.blit(host_text, (self.width * player_pos + _width / 2 + self.width/2, self.height * player_pos))
 
