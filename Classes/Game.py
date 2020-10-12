@@ -29,7 +29,6 @@ class Game:
     def event_loop(self, change_to):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                print("catch")
                 if event.key == pygame.K_RIGHT or event.key == ord('d'):
                     change_to = "RIGHT"
                 elif event.key == pygame.K_LEFT or event.key == ord('a'):
@@ -41,6 +40,8 @@ class Game:
                 elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     # sys.exit()
+            if event.type == pygame.QUIT:
+                return sys.exit()
         return change_to
 
     def refresh_screen(self):
@@ -148,25 +149,22 @@ class Game:
         timer = time.time()
         food = Food(self.width, self.height)
         while True:
-            for ev in pygame.event.get():
-                if ev.type == pygame.QUIT:
-                    return sys.exit()
-                for i, snake in enumerate(self.snakes):
-                    if snake.alive:
-                        snake.change_to = self.event_loop(snake.change_to)
-                        snake.validate_direction_and_change()
-                        snake.change_head_position()
-                        self.scores[i], food.pos = snake.body_mechanism(
-                            self.scores[i], food.pos, self.width, self.height)
-                        snake.draw_snake(self.play_surface)
-                        food.draw(self.play_surface)
-                        snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
-                        self.show_scores()
-                        self.refresh_screen()
-                var = time.time() - timer
-                if int(var % self.time_interval) == 0 \
-                        and var % self.time_interval < 0.055:
-                    self.write_to_csv(self.logger_file_path)
+            for i, snake in enumerate(self.snakes):
+                if snake.alive:
+                    snake.change_to = self.event_loop(snake.change_to)
+                    snake.validate_direction_and_change()
+                    snake.change_head_position()
+                    self.scores[i], food.pos = snake.body_mechanism(
+                        self.scores[i], food.pos, self.width, self.height)
+                    snake.draw_snake(self.play_surface)
+                    food.draw(self.play_surface)
+                    snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
+                    self.show_scores()
+                    self.refresh_screen()
+            var = time.time() - timer
+            if int(var % self.time_interval) == 0 \
+                    and var % self.time_interval < 0.055:
+                self.write_to_csv(self.logger_file_path)
 
 # # crazy test
 # if __name__ == '__main__':
