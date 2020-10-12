@@ -6,21 +6,20 @@ import pygame
 import csv
 import time
 
-from Classes.DataEnteringScreen import DataEnteringScreen
+from Classes import consts
 from Classes.Food import Food
-from Classes.Snake import Snake
 
 
 class Game:
-    def __init__(self, snakes, width=720, height=460, speed=25):
+    def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT, speed=consts.SPEED):
         self.snakes = snakes
         self.width = width
         self.height = height
         self.intend = self.width / 12
-        self.time_interval = 3
+        self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
         self.scores = [0 for _ in range(len(self.snakes))]
-        self.status = "OK"
+        self.status = consts.STATUS_OK
         self.speed = speed
         self.play_surface = pygame.display.set_mode((self.width, self.height))
         self.logger_file_path = "{}/{}".format(os.getcwd(), 'Logs/logs.csv')
@@ -30,6 +29,7 @@ class Game:
     def event_loop(self, change_to):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
+                print("catch")
                 if event.key == pygame.K_RIGHT or event.key == ord('d'):
                     change_to = "RIGHT"
                 elif event.key == pygame.K_LEFT or event.key == ord('a'):
@@ -70,21 +70,21 @@ class Game:
         for i, snake in enumerate(self.snakes):
             results += '{0}. Score: {1}\n'.format(snake.name, self.scores[i])
 
-        s_font = pygame.font.SysFont('monaco', int(self.width / 25))
-        self.blit_text(self.play_surface, results, (int(self.height/16), int(self.width/23)), s_font)
+        s_font = pygame.font.SysFont(consts.FONT, int(self.width / 25))
+        self.blit_text(self.play_surface, results, (int(self.height / 16), int(self.width / 23)), s_font)
 
     def game_over(self):
         self.show_scores()
         res = [not snake.alive for snake in self.snakes]
         pygame.display.flip()
         if all(res):
-            go_font = pygame.font.SysFont('monaco', int(self.width / 10))
+            go_font = pygame.font.SysFont(consts.FONT, int(self.width / 10))
             go_surf = go_font.render('Game is over', True, pygame.Color(255, 0, 0))
             go_rect = go_surf.get_rect()
             go_rect.midtop = (self.width / 2, self.height / 30)
             self.play_surface.blit(go_surf, go_rect)
             pygame.display.flip()
-            self.status = "Finished"
+            self.status = consts.STATUS_FINISHED
             self.write_to_csv(self.logger_file_path)
             time.sleep(2)
             pygame.quit()
@@ -148,22 +148,25 @@ class Game:
         timer = time.time()
         food = Food(self.width, self.height)
         while True:
-            for i, snake in enumerate(self.snakes):
-                if snake.alive:
-                    snake.change_to = self.event_loop(snake.change_to)
-                    snake.validate_direction_and_change()
-                    snake.change_head_position()
-                    self.scores[i], food.pos = snake.body_mechanism(
-                        self.scores[i], food.pos, self.width, self.height)
-                    snake.draw_snake(self.play_surface)
-                    food.draw(self.play_surface)
-                    snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
-                    self.show_scores()
-                    self.refresh_screen()
-            var = time.time() - timer
-            if int(var % self.time_interval) == 0\
-                    and var % self.time_interval < 0.055:
-                self.write_to_csv(self.logger_file_path)
+            for ev in pygame.event.get():
+                if ev.type == pygame.QUIT:
+                    return sys.exit()
+                for i, snake in enumerate(self.snakes):
+                    if snake.alive:
+                        snake.change_to = self.event_loop(snake.change_to)
+                        snake.validate_direction_and_change()
+                        snake.change_head_position()
+                        self.scores[i], food.pos = snake.body_mechanism(
+                            self.scores[i], food.pos, self.width, self.height)
+                        snake.draw_snake(self.play_surface)
+                        food.draw(self.play_surface)
+                        snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
+                        self.show_scores()
+                        self.refresh_screen()
+                var = time.time() - timer
+                if int(var % self.time_interval) == 0 \
+                        and var % self.time_interval < 0.055:
+                    self.write_to_csv(self.logger_file_path)
 
 # # crazy test
 # if __name__ == '__main__':
