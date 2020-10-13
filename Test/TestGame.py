@@ -5,9 +5,9 @@ import time
 from Classes import consts
 from Classes.Food import Food
 from Classes.Snake import Snake
+from random import choice
 
-
-class Game:
+class TestGame:
     def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT,
                  speed=consts.SPEED, food = None):
         self.snakes = snakes
@@ -88,31 +88,6 @@ class Game:
             pygame.quit()
             # sys.exit()
 
-            # Кнопка для выхода, которую я не хз как делать
-            # done = False
-            # smallfont = pygame.font.SysFont('Corbel', 35)
-            # text = smallfont.render('quit', True, (255, 255, 255))
-            # _width = self.width / 10
-            # _height = self.height / 12
-            # while not done:
-            #     mouse = pygame.mouse.get_pos()
-            #     print(mouse)
-            #     for ev in pygame.event.get():
-            #         if ev.type == pygame.MOUSEBUTTONDOWN:
-            #             if self.width / 2 <= mouse[0] <= \
-            #                     self.width / 2 + 140 and \
-            #                     self.height / 2 <= mouse[1] <= \
-            #                     self.height / 2 + _height:
-            #                 pygame.quit()
-            #
-            #     if self.width / 2 <= mouse[0] <= self.width / 2 + 140 \
-            #             and self.height / 2 <= mouse[1] <= self.height / 2 + _height:
-            #         pygame.draw.rect(self.play_surface, (255, 0, 0), [self.width / 2, self.height / 2, 140, _height])
-            #     self.play_surface.blit(text, (self.width / 2 + 50, self.height / 2))
-            #
-            #     # updates the frames of the game
-            #     pygame.display.update()
-
     def draw_snakes(self, snakes, play_surface):
         play_surface.fill(consts.WHITE)
         for snake in snakes:
@@ -128,7 +103,7 @@ class Game:
 
     @staticmethod
     def from_dict(data):
-        return Game([Snake.from_dict(s) for s in data["snakes"]],
+        return TestGame([Snake.from_dict(s) for s in data["snakes"]],
                     data["width"], data["height"], data["speed"],
                     data["food_pos"])
 
@@ -138,7 +113,8 @@ class Game:
         while True:
             for i, snake in enumerate(self.snakes):
                 if snake.alive:
-                    snake.change_to = self.event_loop(snake.change_to)
+                    # snake.change_to = self.event_loop(snake.change_to)
+                    snake.change_to = choice(["UP","DOWN", "LEFT", "RIGHT"].remove(snake.))
                     snake.validate_direction_and_change()
                     snake.change_head_position()
                     self.scores[i], self.food.pos = snake.body_mechanism(
@@ -148,9 +124,3 @@ class Game:
             self.food.draw(self.play_surface)
             self.show_scores()
             self.refresh_screen()
-# # crazy test
-# if __name__ == '__main__':
-#     snakes = [Snake("dimon", width=720, height=460),
-#               Snake("rinat", width=720, height=460)]
-#     # Snake("sanya", width=720, height=460)]
-#     game = Game(snakes, width=720, height=460).run()
