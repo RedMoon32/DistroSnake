@@ -8,10 +8,12 @@ from Classes.Snake import Snake
 
 
 class Game:
-    def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT, speed=consts.SPEED):
+    def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT,
+                 speed=consts.SPEED, food = None):
         self.snakes = snakes
         self.width = width
         self.height = height
+        self.food = food if food is not None else Food(self.width, self.height)
         self.intend = self.width / 12
         self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
@@ -19,7 +21,6 @@ class Game:
         self.status = consts.STATUS_OK
         self.speed = speed
         self.play_surface = pygame.display.set_mode((self.width, self.height))
-
         pygame.display.set_caption('Snake Game')
         pygame.init()
 
@@ -122,30 +123,32 @@ class Game:
 
     def to_dict(self):
         return {"snakes": [snake.to_dict() for snake in self.snakes],
-                "width": self.width, "height": self.height, "speed": self.speed}
+                "width": self.width, "height": self.height, "speed": self.speed,
+                "food_pos": self.food.pos}
 
     @staticmethod
     def from_dict(data):
         return Game([Snake.from_dict(s) for s in data["snakes"]],
-                    data["width"], data["height"], data["speed"])
+                    data["width"], data["height"], data["speed"],
+                    data["food_pos"])
 
     def run(self):
         timer = time.time()
-        food = Food(self.width, self.height)
+        self.food = Food(self.width, self.height)
         while True:
             for i, snake in enumerate(self.snakes):
                 if snake.alive:
                     snake.change_to = self.event_loop(snake.change_to)
                     snake.validate_direction_and_change()
                     snake.change_head_position()
-                    self.scores[i], food.pos = snake.body_mechanism(
-                        self.scores[i], food.pos, self.width, self.height)
+                    self.scores[i], self.food.pos = snake.body_mechanism(
+                        self.scores[i], self.food.pos, self.width, self.height)
                     snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
             self.draw_snakes(self.snakes, self.play_surface)
-            food.draw(self.play_surface)
+            self.food.draw(self.play_surface)
             self.show_scores()
             self.refresh_screen()
-
+            print(self.to_dict())
 # # crazy test
 # if __name__ == '__main__':
 #     snakes = [Snake("dimon", width=720, height=460),
