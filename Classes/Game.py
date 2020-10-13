@@ -1,3 +1,4 @@
+import itertools
 import sys
 import pygame
 import time
@@ -14,7 +15,7 @@ class Game:
         self.snakes = snakes
         self.width = width
         self.height = height
-        self.food = Food(food[0], food[1]) if food is not None else Food(self.width/2, self.height/2)
+        self.food = Food(food[0], food[1]) if food is not None else Food(self.width / 2, self.height / 2)
         self.intend = self.width / 12
         self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
@@ -134,10 +135,12 @@ class Game:
 
     def run(self):
 
+        a = iter(itertools.cycle(["LEFT", "UP", "RIGHT", "DOWN"]))
         while True:
             for i, snake in enumerate(self.snakes):
+                pygame.event.pump()
                 if snake.alive:
-                    snake.change_to = self.event_loop(snake.change_to)
+                    snake.change_to = next(a)
                     snake.validate_direction_and_change()
                     snake.change_head_position()
                     self.scores[i], self.food.pos = snake.body_mechanism(

@@ -1,6 +1,6 @@
 WIDTH = 720
 HEIGHT = 460
-SPEED = 3
+SPEED = 13
 SAVE_TIME_INTERVAL_SEC = 3
 STATUS_OK = "Ok"
 STATUS_FINISHED = "Finished"
@@ -11,4 +11,3 @@ LIGHT_GREY = (100, 100, 100)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 FONT = 'monaco'
-
