@@ -128,9 +128,9 @@ class Game:
 
     @staticmethod
     def from_dict(data):
-        return Game([Snake.from_dict(s) for s in data["snakes"]],
-                    data["width"], data["height"], data["speed"],
-                    data["food_pos"])
+        return Game(snakes=[Snake.from_dict(s) for s in data["snakes"]],
+                    width=data["width"], height=data["height"], speed=data["speed"],
+                    food=data["food_pos"])
 
     def run(self):
 
