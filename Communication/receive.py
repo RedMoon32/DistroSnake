@@ -1,3 +1,4 @@
+import pygame
 from redis import Redis
 import json
 
@@ -5,7 +6,10 @@ from Classes import consts
 
 r = Redis(host='localhost', port=6379)
 FREE_GAMES = 'FREE_GAMES'
-NEW_GAME = {"snakes": [], "master": "HOST"}
+HOST = "HOST"
+NEW_GAME = {"snakes": [], "master": HOST, "status": "PENDING"}
+
+i = 0
 
 
 def render_players(game_name, font, window, screen):
@@ -15,15 +19,14 @@ def render_players(game_name, font, window, screen):
             return
         players = res["snakes"]
 
-        # for player in players:
-        #     if not get_key(player):
-        #         players.remove(player)
-        #         set_key(game_name, res)
-
-        #if "HOST" not in players:
-        text = 'Connected players: {}'.format(','.join(players))
-        #else:
-        #    text = 'Host of the game is off, please join other room'
+        for player in players:
+            if not get_key(player):
+                players.remove(player)
+                set_key(game_name, res)
+        if HOST in players:
+            text = 'Connected players: {}'.format(','.join(players))
+        else:
+            text = 'Host is off, please connect other room'
 
         game_text = font.render(text, True, consts.WHITE)
         screen.blit(game_text, (window.width / 2 - 200, window.height / 2), )
@@ -47,7 +50,7 @@ def set_key(key, data, client=r, **kwargs):
 def create_game(name):
     games = get_key(FREE_GAMES)
     new_game = NEW_GAME.copy()
-    new_game["snakes"].append("HOST")
+    new_game["snakes"].append(HOST)
     set_key(name, new_game)
     if not games:
         games = []

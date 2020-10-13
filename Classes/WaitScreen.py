@@ -27,6 +27,7 @@ class WaitSreen:
 
         position = 3 / 4
         while True:
+            screen.fill((0, 0, 0))
             mouse = pygame.mouse.get_pos()
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:

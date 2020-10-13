@@ -26,6 +26,7 @@ class HostScreen:
         move_parameter = 1 / 11 * self.height
 
         while True:
+            screen.fill((0, 0, 0))
             mouse = pygame.mouse.get_pos()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

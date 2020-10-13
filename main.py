@@ -26,8 +26,9 @@ name = 'HOST'
 def set_alive():
     while True:
         print('Set Alive')
-        set_key(name, True, ex=100)
-        sleep(1)
+        if name:
+            set_key(name, True, ex=2)
+            sleep(1)
 
 
 def connect_to_host():
@@ -84,7 +85,7 @@ def run():
 
 
 if __name__ == "__main__":
-    # thread = Thread(target=set_alive, )
-    # thread.daemon = True
-    # thread.start()
+    thread = Thread(target=set_alive, )
+    thread.daemon = True
+    thread.start()
     run()
