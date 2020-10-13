@@ -25,14 +25,13 @@ name = 'HOST'
 
 def set_alive():
     while True:
-        print('Set Alive')
         if name:
             set_key(name, True, ex=2)
             sleep(1)
 
 
 def connect_to_host():
-    host = None
+    host = "ABVD"
     while host not in find_games():
         host = DataEnteringScreen('Initialization window', 'Enter host', width, height).run()
         if host not in find_games():
@@ -42,32 +41,45 @@ def connect_to_host():
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
+        name = "OK"
         while not name:
             name = DataEnteringScreen('What is your name?', 'Enter non empty name', width, height).run()
 
         connect_to_game(host, name)
 
         if name is not None:
-            snakes = [Snake(name, width=width, height=height), Snake("test", width=width, height=height)]
-            success, _ = WaitSreen().run(host)
+
+            success = WaitSreen().run(host)
             if success:
                 # По идее, надо просто передать змейку хосту и там уже всё запускать
-                Game(snakes, width=width, height=height, speed=speed).run()
+                prev = None
+                # while True:
+                res = get_game(host)["state"]
+                #    if res != prev:
+                #        print('not equal')
+                # prev = res
+                game = Game.from_dict(res)
+                while True:
+                    game.render()
+
             else:
                 sys.exit()
 
 
 def create_host():
     host = "Host"
-    host_address = 'ABVD'
-    create_game(host_address)
+    game_name = 'ABVD'
+    create_game(game_name)
     res, _ = HostScreen('Your host data',
-                        host_address, width,
-                        height).run(host_address)
+                        game_name, width,
+                        height).run(game_name)
     # вот здесь надо от юзеров получать змейки и кидать в массив
-    snakes = [Snake(host, width=width, height=height), Snake("test", width=width, height=height)]
+    # По идее, надо просто передать змейку хосту и там уже всё запускать
 
-    Game(snakes, width=width, height=height).run()
+    snakes = [Snake(name, width=width, height=height), Snake("test", width=width, height=height)]
+    game = Game(snakes, width=width, height=height, speed=speed)
+    update_game_var(game_name, "status", PLAYING)
+    game.run()
 
 
 def run():

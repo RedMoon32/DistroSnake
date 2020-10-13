@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from Classes import consts
-from Communication.receive import render_players
+from Communication.receive import render_players, start_game
 
 
 class HostScreen:
@@ -34,7 +34,11 @@ class HostScreen:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if position * self.width <= mouse[0] <= 1.5 * position * self.width \
                             and position * self.height <= mouse[1] <= position * self.height + move_parameter:
-                        return True, pygame.quit()
+                        if start_game(game_name):
+                            return True, pygame.quit()
+                        else:
+                            print("Error starting game")
+                            sys.exit(0)
 
             game_text = smallfont.render('Yout host is: {}'.format(self.host), True, consts.WHITE)
             screen.blit(game_text, (position * self.width, position * self.height / 2))

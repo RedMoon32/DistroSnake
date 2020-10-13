@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from Classes import consts
-from Communication.receive import render_players
+from Communication.receive import render_players, get_game, PLAYING
 
 
 class WaitSreen:
@@ -28,23 +28,14 @@ class WaitSreen:
         position = 3 / 4
         while True:
             screen.fill((0, 0, 0))
-            mouse = pygame.mouse.get_pos()
+
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
                     sys.exit()
-                if ev.type == pygame.MOUSEBUTTONDOWN:
-                    if self.width / 3 <= mouse[0] <= self.width / 3 + 3 * self.height * player_pos \
-                            and self.height * player_pos <= mouse[1] <= self.height * player_pos + move_parameter:
-                        return True, pygame.quit()
 
-                    if position * self.width <= mouse[0] <= position * 6 / 5 * self.width \
-                            and position * self.height <= mouse[1] <= position * self.height + move_parameter:
-                        return False, pygame.quit()
+            if get_game(game_name)["status"] == PLAYING:
+                return True
 
-            pygame.draw.rect(screen,
-                             consts.LIGHT_GREY,
-                             [self.width / 3, self.height * player_pos,
-                              int(6 * move_parameter), move_parameter])
             screen.blit(host_text, (self.width / 3, self.height * player_pos))
 
             pygame.draw.rect(screen,

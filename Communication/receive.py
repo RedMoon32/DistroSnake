@@ -7,9 +7,19 @@ from Classes import consts
 r = Redis(host='localhost', port=6379)
 FREE_GAMES = 'FREE_GAMES'
 HOST = "HOST"
-NEW_GAME = {"snakes": [], "master": HOST, "status": "PENDING"}
+
+PLAYING = "PLAYING"
+PENDING = "PENDING"
+
+NEW_GAME = {"snakes": [], "master": HOST, "status": "PENDING", "state": None}
 
 i = 0
+
+
+def update_game_var(game_name, game_var, new_val):
+    game = get_game(game_name)
+    game[game_var] = new_val
+    set_key(game_name, game)
 
 
 def render_players(game_name, font, window, screen):
@@ -69,10 +79,10 @@ def find_games():
     return games
 
 
-def start_game(name):
+def start_game(game_name):
     games: list = get_key(FREE_GAMES)
-    if name in games:
-        games.remove(name)
+    if game_name in games:
+        games.remove(game_name)
         set_key(FREE_GAMES, games)
         return True
     else:
