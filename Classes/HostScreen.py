@@ -1,12 +1,10 @@
 import pygame
 
-from Classes.Game import Game
-from Classes.Snake import Snake
-from Classes.WaitScreen import WaitSreen
+from Classes import consts
 
 
 class HostScreen:
-    def __init__(self, window_name, host, width=640, height=480):
+    def __init__(self, window_name, host, width=consts.WIDTH, height=consts.HEIGHT):
         self.window_name = window_name
         self.host = host
         self.width = width
@@ -18,7 +16,7 @@ class HostScreen:
 
     def run(self):
         screen = pygame.display.set_mode(self.size)
-        smallfont = pygame.font.SysFont('monaco', int(self.width/19))
+        smallfont = pygame.font.SysFont(consts.FONT, int(self.width / 19))
         _width = 1 / 10 * self.width
 
         position = 5 / 16
@@ -34,20 +32,19 @@ class HostScreen:
                             and position * self.height <= mouse[1] <= position * self.height + move_parameter:
                         return True, pygame.quit()
 
-            game_text = smallfont.render('Yout host is: {}'.format(self.host), True, (255, 255, 255))
+            game_text = smallfont.render('Yout host is: {}'.format(self.host), True, consts.WHITE)
             screen.blit(game_text, (position * self.width, position * self.height / 2))
 
             pygame.draw.rect(screen,
-                             (0, 0, 255),
+                             consts.BLUE,
                              [position * self.width, position * self.height, int(5 * move_parameter), move_parameter])
 
-            quit_text = smallfont.render('Start game! ', True, (255, 255, 255))
+            quit_text = smallfont.render('Start game! ', True, consts.WHITE)
             screen.blit(quit_text, (position * self.width + _width / 2, position * self.height))
 
             pygame.display.update()
 
-
-if __name__ == '__main__':
-    auth = HostScreen('Host data', '<сюда хост>', 720, 460).run()
-    # res = auth.run()
-    # print(res)
+# if __name__ == '__main__':
+#     auth = HostScreen('Host data', '<сюда хост>', 720, 460).run()
+#     res = auth.run()
+#     print(res)

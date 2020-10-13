@@ -2,9 +2,11 @@ import random
 
 import pygame
 
+from Classes import consts
+
 
 class HostInitializationScreen:
-    def __init__(self, width=720, height=460):
+    def __init__(self, width=consts.WIDTH, height=consts.HEIGHT):
         self.width = width
         self.height = height
         self.size = (self.width, self.height)
@@ -15,7 +17,7 @@ class HostInitializationScreen:
 
     def run(self):
         screen = pygame.display.set_mode(self.size)
-        font = pygame.font.Font(None, int(2*self.width/45))
+        font = pygame.font.Font(None, int(2 * self.width / 45))
         input_box = pygame.Rect(5 * self.width / 16, 5 * self.height / 16,
                                 self.width, self.height / 15)
         active, text, done = False, '', False

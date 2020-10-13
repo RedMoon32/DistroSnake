@@ -1,14 +1,15 @@
 import random
 import pygame
 
+from Classes import consts
 
 class Snake:
 
-    def __init__(self, name, width=720, height=460):
+    def __init__(self, name, width=consts.WIDTH, height=consts.HEIGHT):
         self.name = name
         self.width = width
         self.height = height
-        self.intend = 60
+        self.intend = consts.INTEND
         self.head_pos = self.randomize_head_position(self.width, self.height, self.intend)  # [x, y]
         self.body = self.randomize_body_position(self.head_pos)
         self.color = self.randomize_color()
@@ -154,7 +155,7 @@ class Snake:
         return score, food_pos
 
     def draw_snake(self, play_surface):
-        play_surface.fill(pygame.Color(255, 255, 255))
+        play_surface.fill(consts.WHITE)
         for pos in self.body:
             pygame.draw.rect(
                 play_surface, self.color, pygame.Rect(
