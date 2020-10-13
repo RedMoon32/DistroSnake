@@ -22,7 +22,7 @@ class Game:
         self.status = consts.STATUS_OK
         self.speed = speed
         self.play_surface = pygame.display.set_mode((self.width, self.height))
-        self.logger_file_path = "{}/{}".format(os.getcwd(), 'Logs/logs.csv')
+
         pygame.display.set_caption('Snake Game')
         pygame.init()
 
@@ -46,8 +46,8 @@ class Game:
 
     def refresh_screen(self):
         pygame.display.flip()
-        alive = sum(1 for snake in self.snakes if snake.alive)
-        Game(self.snakes, self.width, self.height).fps_controller.tick(alive * self.speed)
+        alive = 1
+        self.fps_controller.tick(alive * self.speed)
 
     def blit_text(self, surface, text, pos, font):
         words = [word.split(' ') for word in text.splitlines()]
@@ -86,7 +86,6 @@ class Game:
             self.play_surface.blit(go_surf, go_rect)
             pygame.display.flip()
             self.status = consts.STATUS_FINISHED
-            self.write_to_csv(self.logger_file_path)
             time.sleep(2)
             pygame.quit()
             # sys.exit()
@@ -116,34 +115,14 @@ class Game:
             #     # updates the frames of the game
             #     pygame.display.update()
 
-    def write_to_csv(self, filename):
-        snakes_data = [
-            "{}. Direction: {}. Score: {}. ALive: {}. Died from self: {}. Died from wall: {}. Died from snake: {}"
-                .format(snake.name, snake.direction, self.scores[i], snake.alive, snake.died_from_self,
-                        snake.died_from_wall, snake.died_from_snake)
-            for i, snake in enumerate(self.snakes)]
-        writen = [
-            {
-                'Date and time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                'game_status': self.status,
-                'field_size': (self.width, self.height),
-                'speed': self.speed,
-                'snakes': snakes_data
-            }]
+    def draw_snakes(self, snakes, play_surface):
 
-        operation = 'a' if os.path.exists(filename) else 'w'
-        csv_columns = ['Date and time', 'game_status', 'field_size', 'speed', 'snakes']
-
-        exists = os.path.exists(os.path.dirname(filename))
-        if not exists:
-            os.makedirs(os.path.dirname(filename))
-
-        with open(filename, operation) as f:
-            writer = csv.DictWriter(f, fieldnames=csv_columns)
-            if not exists:
-                writer.writeheader()
-            for data in writen:
-                writer.writerow(data)
+        play_surface.fill(consts.WHITE)
+        for snake in snakes:
+            for pos in snake.body:
+                pygame.draw.rect(
+                    play_surface, snake.color, pygame.Rect(
+                        pos[0], pos[1], 10, 10))
 
     def run(self):
         timer = time.time()
@@ -156,15 +135,14 @@ class Game:
                     snake.change_head_position()
                     self.scores[i], food.pos = snake.body_mechanism(
                         self.scores[i], food.pos, self.width, self.height)
-                    snake.draw_snake(self.play_surface)
-                    food.draw(self.play_surface)
                     snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
-                    self.show_scores()
-                    self.refresh_screen()
-            var = time.time() - timer
-            if int(var % self.time_interval) == 0 \
-                    and var % self.time_interval < 0.055:
-                self.write_to_csv(self.logger_file_path)
+
+            self.draw_snakes(self.snakes, self.play_surface)
+            food.draw(self.play_surface)
+            self.show_scores()
+            self.refresh_screen()
+
+
 
 # # crazy test
 # if __name__ == '__main__':

@@ -3,6 +3,7 @@ import pygame
 
 from Classes import consts
 
+
 class Snake:
 
     def __init__(self, name, width=consts.WIDTH, height=consts.HEIGHT):
@@ -19,6 +20,13 @@ class Snake:
         self.died_from_wall = False
         self.died_from_snake = False
         self.died_from_self = False
+
+    def to_dict(self):
+        return {"name": self.name}
+
+    @staticmethod
+    def from_dict(data):
+        return Snake(data["name"])
 
     def __eq__(self, other):
         return self.body == other

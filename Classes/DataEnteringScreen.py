@@ -2,6 +2,7 @@ import pygame
 
 from Classes import consts
 
+
 class DataEnteringScreen:
     def __init__(self, window_name, text, width=consts.WIDTH, height=consts.HEIGHT):
         self.window_name = window_name
@@ -15,7 +16,7 @@ class DataEnteringScreen:
 
     def run(self):
         screen = pygame.display.set_mode(self.size)
-        font = pygame.font.Font(None, int(self.width/20))
+        font = pygame.font.Font(None, int(self.width / 20))
         input_box = pygame.Rect(5 * self.width / 16, 5 * self.height / 16,
                                 self.width, self.height / 15)
         active, text, done = False, '', False
@@ -37,13 +38,9 @@ class DataEnteringScreen:
             screen.fill(consts.GREY)
             screen.blit(font.render(self.text, True, consts.WHITE), (self.width / 2.5, self.width / 6.5))
             txt_surface = font.render(text, True, consts.WHITE)
-            input_box.w = max(self.width / 3, txt_surface.get_width() + int(self.width/64))
-            screen.blit(txt_surface, (input_box.x + int(self.height/43), input_box.y + int(self.height/64)))
+            input_box.w = max(self.width / 3, txt_surface.get_width() + int(self.width / 64))
+            screen.blit(txt_surface, (input_box.x + int(self.height / 43), input_box.y + int(self.height / 64)))
             pygame.draw.rect(screen, consts.WHITE, input_box, 2)
 
             pygame.display.flip()
 
-# if __name__ == '__main__':
-#     auth = NameEnteringScreen()
-#     res = auth.run()
-#     print(res)
