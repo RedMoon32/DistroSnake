@@ -32,6 +32,7 @@ def set_alive():
 
 def connect_to_host():
     host = None
+    host = 'ABVD'
     while host not in find_games():
         host = DataEnteringScreen('Initialization window', 'Enter host', width, height).run()
         if host not in find_games():
@@ -41,6 +42,7 @@ def connect_to_host():
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
+        name = "cavdavds"
         while not name:
             name = DataEnteringScreen('What is your name?', 'Enter non empty name', width, height).run()
 

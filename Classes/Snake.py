@@ -8,7 +8,8 @@ class Snake:
 
     def __init__(self, name, width=consts.WIDTH, height=consts.HEIGHT, head_pos=None,
                  body=None, direction=None,
-                 alive=True, died_from_wall=False, died_from_snake=False, died_from_self=False):
+                 alive=True, died_from_wall=False, died_from_snake=False, died_from_self=False,
+                 color=None):
         self.name = name
         self.width = width
         self.height = height
@@ -16,7 +17,7 @@ class Snake:
         self.head_pos = self.randomize_head_position(self.width, self.height,
                                                      self.intend) if head_pos is None else head_pos
         self.body = self.randomize_body_position(self.head_pos) if body is None else body
-        self.color = self.randomize_color()
+        self.color = self.randomize_color() if color is None else color
         self.direction = self.randomize_init_direction(self.body) if direction is None else direction
         self.change_to = self.direction
         self.alive = alive
@@ -28,13 +29,13 @@ class Snake:
         return {"name": self.name, "width": self.width, "height": self.height, "direction": self.direction,
                 "alive": self.alive, "died_from_wall": self.died_from_wall,
                 "died_from_snake": self.died_from_snake, "died_from_self": self.died_from_self,
-                "head_pos": self.head_pos, "body": self.body}
+                "head_pos": self.head_pos, "body": self.body, "color": self.color}
 
     @staticmethod
     def from_dict(data):
         return Snake(data["name"], data["width"], data["height"], data["direction"],
                      data["alive"], data["died_from_wall"], data["died_from_snake"],
-                     data["died_from_self"], data["head_pos"], data["body"])
+                     data["died_from_self"], data["head_pos"], data["body"], data["color"])
 
     def __eq__(self, other):
         return self.body == other
