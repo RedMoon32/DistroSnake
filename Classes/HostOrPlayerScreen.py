@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 from Classes import consts
@@ -43,7 +45,7 @@ class HostOrPlayerScreen:
                             and player_pos * self.height <= mouse[1] <= player_pos * self.height + move_parameter:
                         return False
                 if ev.type == pygame.QUIT:
-                    return pygame.quit()
+                    sys.exit()
 
             pygame.draw.rect(screen,
                              consts.RED,

@@ -1,7 +1,3 @@
-import sys
-
-import pygame
-
 from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Game import Game
 from Classes.Snake import Snake
@@ -19,52 +15,46 @@ speed = consts.SPEED
 from tkinter import *
 from tkinter import messagebox
 
+set_alive_thread = None
+
 
 def connect_to_host():
-    host = ""
-    close = None
+    host = None
     while host not in find_games():
-        close, host = DataEnteringScreen('Initialization window', 'Enter host', width, height).run()
-        if close:
-            break
+        host = DataEnteringScreen('Initialization window', 'Enter host', width, height).run()
         if host not in find_games():
             Tk().wm_withdraw()  # to hide the main window
-            messagebox.showinfo('Host not found, try again', 'OK')
+            messagebox.showinfo('Error', 'Host not found, try again')
 
-    if close is False and host is not None:
+    if host is not None:
         #  по хосту подключаться, используй как хочешь
-        close, name = DataEnteringScreen('What is your name?', 'Enter name', width, height).run()
-        if close is False and name is not None:
+        name = None
+        while not name:
+            name = DataEnteringScreen('What is your name?', 'Enter non empty name', width, height).run()
+
+        connect_to_game(host, name)
+
+        if name is not None:
             snakes = [Snake(name, width=width, height=height), Snake("test", width=width, height=height)]
-            success, close_pressed, _ = WaitSreen().run()
-            if close_pressed:
-                sys.exit()
-            elif success:
+            success, _ = WaitSreen().run(host)
+            if success:
                 # По идее, надо просто передать змейку хосту и там уже всё запускать
                 Game(snakes, width=width, height=height, speed=speed).run()
             else:
                 sys.exit()
-        else:
-            sys.exit()
-    else:
-        sys.exit()
 
 
 def create_host():
     host = "Host"
     host_address = 'ABVD'
+    create_game(host_address)
     res, _ = HostScreen('Your host data',
                         host_address, width,
-                        height).run()
-    create_game('ABVD')
-    if res:
-        r.flushdb()
-        # вот здесь надо от юзеров получать змейки и кидать в массив
-        snakes = [Snake(host, width=width, height=height), Snake("test", width=width, height=height)]
+                        height).run(host_address)
+    # вот здесь надо от юзеров получать змейки и кидать в массив
+    snakes = [Snake(host, width=width, height=height), Snake("test", width=width, height=height)]
 
-        Game(snakes, width=width, height=height).run()
-    else:
-        sys.exit()
+    Game(snakes, width=width, height=height).run()
 
 
 def run():

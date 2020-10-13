@@ -1,6 +1,9 @@
+import sys
+
 import pygame
 
 from Classes import consts
+from Communication.receive import render_players
 
 
 class DataEnteringScreen:
@@ -14,7 +17,7 @@ class DataEnteringScreen:
         pygame.init()
         pygame.display.set_caption(self.window_name)
 
-    def run(self):
+    def run(self, game_name=None):
         screen = pygame.display.set_mode(self.size)
         font = pygame.font.Font(None, int(self.width / 20))
         input_box = pygame.Rect(5 * self.width / 16, 5 * self.height / 16,
@@ -24,12 +27,12 @@ class DataEnteringScreen:
         while not done:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return True, pygame.quit()
+                    sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     active = not active if input_box.collidepoint(event.pos) else False
                 if event.type == pygame.KEYDOWN and active:
                     if event.key == pygame.K_RETURN:
-                        return False, text
+                        return text
                     elif event.key == pygame.K_BACKSPACE:
                         text = text[:-1]
                     else:
@@ -41,6 +44,8 @@ class DataEnteringScreen:
             input_box.w = max(self.width / 3, txt_surface.get_width() + int(self.width / 64))
             screen.blit(txt_surface, (input_box.x + int(self.height / 43), input_box.y + int(self.height / 64)))
             pygame.draw.rect(screen, consts.WHITE, input_box, 2)
+
+            render_players(game_name, font, self, screen)
 
             pygame.display.flip()
 

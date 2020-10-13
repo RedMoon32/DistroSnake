@@ -1,8 +1,21 @@
 from redis import Redis
 import json
 
+from Classes import consts
+
 r = Redis(host='localhost', port=12000)
 FREE_GAMES = 'FREE_GAMES'
+NEW_GAME = {"snakes": []}
+
+
+def render_players(game_name, font, window, screen):
+    if game_name:
+        res = get_game(game_name)
+        if not res:
+            return
+        players = res["snakes"]
+        game_text = font.render('Connected players: {}'.format(','.join(players)), True, consts.WHITE)
+        screen.blit(game_text, (window.width / 2 - 200, window.height / 2), )
 
 
 def get_key(key, client=r):
@@ -12,16 +25,27 @@ def get_key(key, client=r):
     return None
 
 
+def get_players_name(game_name):
+    return get_game(game_name)["snakes"]
+
+
 def set_key(key, data, client=r):
     return client.set(key, json.dumps(data))
 
 
 def create_game(name):
     games = get_key(FREE_GAMES)
+    new_game = NEW_GAME.copy()
+    new_game["snakes"].append("HOST")
+    set_key(name, new_game)
     if not games:
         games = []
     games.append(f'{name}')
     set_key(FREE_GAMES, games)
+
+
+def get_game(game_name):
+    return get_key(game_name)
 
 
 def find_games():
@@ -41,10 +65,12 @@ def start_game(name):
         return False
 
 
-def connect_to_game(name):
+def connect_to_game(game_name, player_name):
     games = get_key(FREE_GAMES)
-    if name in games:
-        pass
+    if game_name in games:
+        game = get_key(game_name)
+        game["snakes"].append(player_name)
+        set_key(game_name, game)
 
 
 def make_move():

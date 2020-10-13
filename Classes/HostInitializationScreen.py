@@ -1,4 +1,5 @@
 import random
+import sys
 
 import pygame
 
@@ -25,7 +26,7 @@ class HostInitializationScreen:
         while not done:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    done = True
+                    sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     active = not active if input_box.collidepoint(event.pos) else False
                 if event.type == pygame.KEYDOWN and active:

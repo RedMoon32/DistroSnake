@@ -6,3 +6,7 @@ Which sources can be used:
 5) http://dispy.sourceforge.net/
 6) https://pycos.sourceforge.io/
 7) https://distributed.dask.org/en/latest/foundations.html
+8) https://www.rabbitmq.com/tutorials/tutorial-one-python.html
+9) https://pypi.org/project/PyRSMQ/
+10 https://stackoverflow.com/questions/42151544/when-to-use-rabbitmq-over-kafka
+11 http://tgrall.github.io/blog/2019/09/05/multi-nodes-redis-cluster-with-docker/
