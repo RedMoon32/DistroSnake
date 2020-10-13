@@ -1,0 +1,8 @@
+Which sources can be used:
+1) Celery
+2) Redis
+3) Celery + Redis
+4) https://pypi.org/project/koboldfs/
+5) http://dispy.sourceforge.net/
+6) https://pycos.sourceforge.io/
+7) https://distributed.dask.org/en/latest/foundations.html
