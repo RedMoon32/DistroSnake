@@ -39,10 +39,10 @@ def connect_to_host():
             Tk().wm_withdraw()  # to hide the main window
             messagebox.showinfo('Error', 'Host not found, try again')
     global name
+    name = "cavdavds"
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
-        name = "cavdavds"
         while not name:
             name = DataEnteringScreen('What is your name?', 'Enter non empty name', width, height).run()
 

@@ -33,9 +33,9 @@ class Snake:
 
     @staticmethod
     def from_dict(data):
-        return Snake(data["name"], data["width"], data["height"], data["direction"],
-                     data["alive"], data["died_from_wall"], data["died_from_snake"],
-                     data["died_from_self"], data["head_pos"], data["body"], data["color"])
+        return Snake(name = data["name"], width=data["width"], height=data["height"], direction=data["direction"],
+                     alive=data["alive"], died_from_wall=data["died_from_wall"], died_from_snake=data["died_from_snake"],
+                     died_from_self=data["died_from_self"], head_pos=data["head_pos"], body=data["body"], color=data["color"])
 
     def __eq__(self, other):
         return self.body == other
