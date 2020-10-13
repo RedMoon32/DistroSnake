@@ -6,7 +6,8 @@ from Classes import consts
 
 class Snake:
 
-    def __init__(self, name, width=consts.WIDTH, height=consts.HEIGHT):
+    def __init__(self, name, width=consts.WIDTH, height=consts.HEIGHT, direction=None,
+                 alive=True, died_from_wall=False, died_from_snake=False, died_from_self=False):
         self.name = name
         self.width = width
         self.height = height
@@ -14,19 +15,23 @@ class Snake:
         self.head_pos = self.randomize_head_position(self.width, self.height, self.intend)  # [x, y]
         self.body = self.randomize_body_position(self.head_pos)
         self.color = self.randomize_color()
-        self.direction = self.randomize_init_direction(self.body)
+        self.direction = self.randomize_init_direction(self.body) if direction is None else direction
         self.change_to = self.direction
-        self.alive = True
-        self.died_from_wall = False
-        self.died_from_snake = False
-        self.died_from_self = False
+        self.alive = alive
+        self.died_from_wall = died_from_wall
+        self.died_from_snake = died_from_snake
+        self.died_from_self = died_from_self
 
     def to_dict(self):
-        return {"name": self.name}
+        return {"name": self.name, "width": self.width, "height": self.height, "direction": self.direction,
+                "alive": self.alive, "died_from_wall": self.died_from_wall,
+                "died_from_snake": self.died_from_snake, "died_from_self": self.died_from_self}
 
     @staticmethod
     def from_dict(data):
-        return Snake(data["name"])
+        return Snake(data["name"], data["width"], data["height"], data["direction"],
+                     data["alive"], data["died_from_wall"], data["died_from_snake"],
+                     data["died_from_self"])
 
     def __eq__(self, other):
         return self.body == other
