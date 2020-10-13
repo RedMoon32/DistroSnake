@@ -136,14 +136,14 @@ class Game:
 
         self.food = Food(self.width, self.height)
         while True:
-            # for i, snake in enumerate(self.snakes):
-            #     if snake.alive:
-            #         snake.change_to = self.event_loop(snake.change_to)
-            #         snake.validate_direction_and_change()
-            #         snake.change_head_position()
-            #         self.scores[i], self.food.pos = snake.body_mechanism(
-            #             self.scores[i], self.food.pos, self.width, self.height)
-            #         snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
+            for i, snake in enumerate(self.snakes):
+                if snake.alive:
+                    snake.change_to = self.event_loop(snake.change_to)
+                    snake.validate_direction_and_change()
+                    snake.change_head_position()
+                    self.scores[i], self.food.pos = snake.body_mechanism(
+                        self.scores[i], self.food.pos, self.width, self.height)
+                    snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
             self.render()
             update_game_var("ABVD", "state", self.to_dict())
             self.refresh_screen()

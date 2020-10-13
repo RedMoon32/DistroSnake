@@ -51,17 +51,10 @@ def connect_to_host():
 
             success = WaitSreen().run(host)
             if success:
-                # По идее, надо просто передать змейку хосту и там уже всё запускать
-                prev = None
-                # while True:
-                res = get_game(host)["state"]
-                #    if res != prev:
-                #        print('not equal')
-                # prev = res
-                game = Game.from_dict(res)
                 while True:
+                    res = get_game(host)["state"]
+                    game = Game.from_dict(res)
                     game.render()
-
             else:
                 sys.exit()
 
