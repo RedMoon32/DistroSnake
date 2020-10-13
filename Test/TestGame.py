@@ -114,7 +114,9 @@ class TestGame:
             for i, snake in enumerate(self.snakes):
                 if snake.alive:
                     # snake.change_to = self.event_loop(snake.change_to)
-                    snake.change_to = choice(["UP","DOWN", "LEFT", "RIGHT"].remove(snake.))
+                    move = ["UP","DOWN", "LEFT", "RIGHT"]
+                    move.remove(snake.direction)
+                    snake.change_to = choice(move)
                     snake.validate_direction_and_change()
                     snake.change_head_position()
                     self.scores[i], self.food.pos = snake.body_mechanism(
