@@ -1,3 +1,6 @@
+from threading import Thread
+from time import sleep
+
 from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Game import Game
 from Classes.Snake import Snake
@@ -17,6 +20,15 @@ from tkinter import messagebox
 
 set_alive_thread = None
 
+name = 'HOST'
+
+
+def set_alive():
+    while True:
+        print('Set Alive')
+        set_key(name, True, ex=100)
+        sleep(1)
+
 
 def connect_to_host():
     host = None
@@ -25,7 +37,7 @@ def connect_to_host():
         if host not in find_games():
             Tk().wm_withdraw()  # to hide the main window
             messagebox.showinfo('Error', 'Host not found, try again')
-
+    global name
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
@@ -71,4 +83,8 @@ def run():
             break
 
 
-run()
+if __name__ == "__main__":
+    # thread = Thread(target=set_alive, )
+    # thread.daemon = True
+    # thread.start()
+    run()

@@ -3,9 +3,9 @@ import json
 
 from Classes import consts
 
-r = Redis(host='localhost', port=12000)
+r = Redis(host='localhost', port=6379)
 FREE_GAMES = 'FREE_GAMES'
-NEW_GAME = {"snakes": []}
+NEW_GAME = {"snakes": [], "master": "HOST"}
 
 
 def render_players(game_name, font, window, screen):
@@ -14,7 +14,18 @@ def render_players(game_name, font, window, screen):
         if not res:
             return
         players = res["snakes"]
-        game_text = font.render('Connected players: {}'.format(','.join(players)), True, consts.WHITE)
+
+        # for player in players:
+        #     if not get_key(player):
+        #         players.remove(player)
+        #         set_key(game_name, res)
+
+        #if "HOST" not in players:
+        text = 'Connected players: {}'.format(','.join(players))
+        #else:
+        #    text = 'Host of the game is off, please join other room'
+
+        game_text = font.render(text, True, consts.WHITE)
         screen.blit(game_text, (window.width / 2 - 200, window.height / 2), )
 
 
@@ -29,8 +40,8 @@ def get_players_name(game_name):
     return get_game(game_name)["snakes"]
 
 
-def set_key(key, data, client=r):
-    return client.set(key, json.dumps(data))
+def set_key(key, data, client=r, **kwargs):
+    return client.set(key, json.dumps(data), **kwargs)
 
 
 def create_game(name):
