@@ -15,7 +15,7 @@ class Snake:
         self.head_pos = self.randomize_head_position(self.width, self.height, self.intend)  # [x, y]
         self.body = self.randomize_body_position(self.head_pos)
         self.color = self.randomize_color()
-        self.direction = self.randomize_init_direction(self.body) if direction is not None else direction
+        self.direction = self.randomize_init_direction(self.body) if direction is None else direction
         self.change_to = self.direction
         self.alive = alive
         self.died_from_wall = died_from_wall

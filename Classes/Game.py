@@ -141,8 +141,6 @@ class Game:
                     self.scores[i], food.pos = snake.body_mechanism(
                         self.scores[i], food.pos, self.width, self.height)
                     snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
-                # print(self.to_dict())
-                # print(self.from_dict(self.to_dict()))
             self.draw_snakes(self.snakes, self.play_surface)
             food.draw(self.play_surface)
             self.show_scores()
