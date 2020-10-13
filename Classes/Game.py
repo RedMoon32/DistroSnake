@@ -14,7 +14,7 @@ class Game:
         self.snakes = snakes
         self.width = width
         self.height = height
-        self.food = Food(food[0], food[1]) if food is not None else Food(self.width, self.height)
+        self.food = Food(food[0], food[1]) if food is not None else Food(self.width/2, self.height/2)
         self.intend = self.width / 12
         self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
@@ -134,7 +134,6 @@ class Game:
 
     def run(self):
 
-        self.food = Food(self.width, self.height)
         while True:
             for i, snake in enumerate(self.snakes):
                 if snake.alive:

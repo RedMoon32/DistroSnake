@@ -5,12 +5,11 @@ from Classes import consts
 
 
 class Food:
-    def __init__(self, screen_width = consts.WIDTH, screen_height = consts.HEIGHT):
+    def __init__(self, x, y):
         self.color = consts.RED
         self.size_x = 10
         self.size_y = 10
-        self.pos = [random.randrange(1, screen_width / 10) * 10,
-                    random.randrange(1, screen_height / 10) * 10]
+        self.pos = [x, y]
 
     def draw(self, play_surface):
         pygame.draw.rect(
