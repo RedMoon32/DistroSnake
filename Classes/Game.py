@@ -1,13 +1,10 @@
-import os
 import sys
-from datetime import datetime
-
 import pygame
-import csv
 import time
 
 from Classes import consts
 from Classes.Food import Food
+from Classes.Snake import Snake
 
 
 class Game:
@@ -116,13 +113,21 @@ class Game:
             #     pygame.display.update()
 
     def draw_snakes(self, snakes, play_surface):
-
         play_surface.fill(consts.WHITE)
         for snake in snakes:
             for pos in snake.body:
                 pygame.draw.rect(
                     play_surface, snake.color, pygame.Rect(
                         pos[0], pos[1], 10, 10))
+
+    def to_dict(self):
+        return {"snakes": [snake.to_dict() for snake in self.snakes],
+                "width": self.width, "height": self.height, "speed": self.speed}
+
+    @staticmethod
+    def from_dict(data):
+        return Game([Snake.from_dict(s) for s in data["snakes"]],
+                    data["width"], data["height"], data["speed"])
 
     def run(self):
         timer = time.time()
@@ -136,13 +141,12 @@ class Game:
                     self.scores[i], food.pos = snake.body_mechanism(
                         self.scores[i], food.pos, self.width, self.height)
                     snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
-
+                # print(self.to_dict())
+                # print(self.from_dict(self.to_dict()))
             self.draw_snakes(self.snakes, self.play_surface)
             food.draw(self.play_surface)
             self.show_scores()
             self.refresh_screen()
-
-
 
 # # crazy test
 # if __name__ == '__main__':
