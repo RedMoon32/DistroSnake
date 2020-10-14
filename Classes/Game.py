@@ -48,6 +48,7 @@ class Game:
                     change_to = "DOWN"
                 elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
+                    exit()
             if event.type == pygame.QUIT:
                 return sys.exit()
         return change_to

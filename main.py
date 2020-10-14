@@ -76,6 +76,7 @@ def connect_to_host():
             else:
                 sys.exit()
 
+
 def body_choice(ind, w, h):
     # left up corner, goes down
     if ind == 0:
@@ -90,8 +91,11 @@ def body_choice(ind, w, h):
         return [[w - 50, h - 50], [w - 40, h - 50], [w - 30, h - 50]], "UP"
 
     # right upper corner, moves left
-    else:
+    elif ind == 3:
         return [[w - 50, 30], [w - 50, 40], [w - 50, 50]], "LEFT"
+    else:
+        return None, None
+
 
 def create_host():
     game_name = 'ABVD'
@@ -104,9 +108,10 @@ def create_host():
     snakes = [Snake(name, width=width, height=height) for name in get_game(game_name)["snakes"]]
     for ind, snake in enumerate(snakes):
         body, direction = body_choice(ind, width, height)
-        snake.body = body
-        snake.head_pos = body[0]
-        snake.direction = direction
+        if body is not None and direction is not None:
+            snake.body = body
+            snake.head_pos = body[0]
+            snake.direction = direction
 
     game = Game(snakes, width=width, height=height, speed=speed)
     update_game_var(game_name, "state", game.to_dict())
