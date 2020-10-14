@@ -4,8 +4,8 @@ import json
 
 from Classes import consts
 
-r = Redis(host='localhost', port=6379)
-# r = Redis(host='10.91.89.94', port=6379)
+# r = Redis(host='localhost', port=6379)
+r = Redis(host='10.91.89.94', port=6379)
 FREE_GAMES = 'FREE_GAMES'
 HOST = "HOST"
 

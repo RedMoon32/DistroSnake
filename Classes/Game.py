@@ -96,7 +96,7 @@ class Game:
             self.status = consts.STATUS_FINISHED
             time.sleep(2)
             pygame.quit()
-            # sys.exit()
+            sys.exit()
 
     def draw_snakes(self, snakes, play_surface):
         play_surface.fill(consts.WHITE)
