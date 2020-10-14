@@ -8,10 +8,11 @@ from Classes.Food import Food
 from Classes.Snake import Snake
 from Communication.receive import update_game_var, get_key, get_game, set_key
 
-
 import random
 
 RAND = random.randint(1000, 9999)
+
+last = None
 
 
 class Game:
@@ -148,15 +149,23 @@ class Game:
 
     @staticmethod
     def game_calculate_once(host_addr, player_name):
+        global last
+
         availability = host_addr + "_AVAILABLE_" + str(RAND)
         prev_state = get_game(host_addr)
+        if prev_state is None:
+            prev_state = last
+
         pre_calc_game = Game.from_dict(prev_state["state"])
+
         if player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
             set_key(availability, True, px=1500)
             pre_calc_game.calculate()
             prev_state["state"] = pre_calc_game.to_dict()
             set_key(host_addr, prev_state)
             set_key(availability, False)
+
+        last = prev_state
 
         return pre_calc_game.render()
 
