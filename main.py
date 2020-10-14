@@ -1,6 +1,8 @@
 from threading import Thread
 from time import sleep
 
+import keyboard as keyboard
+
 from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Game import Game
 from Classes.Snake import Snake
@@ -21,13 +23,18 @@ from tkinter import messagebox
 set_alive_thread = None
 
 name = 'HOST'
+val = True
 
 
 def set_alive():
     while True:
         if name:
-            set_key(name, True, ex=2)
-            sleep(1)
+            set_key(name, val, ex=1)
+
+
+def play(host):
+    while True:
+        Game.game_calculate_once(host)
 
 
 def connect_to_host():
@@ -51,16 +58,12 @@ def connect_to_host():
 
             success = WaitSreen().run(host)
             if success:
-                while True:
-                    res = get_game(host)["state"]
-                    game = Game.from_dict(res)
-                    game.render()
+                play(host=host)
             else:
                 sys.exit()
 
 
 def create_host():
-    host = "Host"
     game_name = 'ABVD'
     create_game(game_name)
     res, _ = HostScreen('Your host data',
@@ -69,10 +72,11 @@ def create_host():
     # вот здесь надо от юзеров получать змейки и кидать в массив
     # По идее, надо просто передать змейку хосту и там уже всё запускать
 
-    snakes = [Snake(name, width=width, height=height), Snake("test", width=width, height=height)]
+    snakes = [Snake(name, width=width, height=height) for name in get_game(game_name)["snakes"]]
     game = Game(snakes, width=width, height=height, speed=speed)
+    update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)
-    game.run()
+    play(host=game_name)
 
 
 def run():
@@ -89,8 +93,24 @@ def run():
             break
 
 
+def listen():
+    global val
+    while True:  # making a loop
+        if keyboard.is_pressed('d'):
+            val = "RIGHT"
+        elif keyboard.is_pressed('a'):
+            val = "LEFT"
+        elif keyboard.is_pressed('w'):
+            val = "UP"
+        elif keyboard.is_pressed('s'):
+            val = "DOWN"
+
+
 if __name__ == "__main__":
     thread = Thread(target=set_alive, )
+    thread2 = Thread(target=listen, )
+    thread2.daemon = True
+    thread2.start()
     thread.daemon = True
     thread.start()
     run()

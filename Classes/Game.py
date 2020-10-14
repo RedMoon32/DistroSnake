@@ -1,3 +1,4 @@
+import itertools
 import sys
 import pygame
 import time
@@ -5,12 +6,16 @@ import time
 from Classes import consts
 from Classes.Food import Food
 from Classes.Snake import Snake
-from Communication.receive import update_game_var
+from Communication.receive import update_game_var, get_key, get_game, set_key
 
+a = iter(itertools.cycle(["LEFT", "UP", "RIGHT", "DOWN"]))
+
+import random
+RAND = random.randint(1000, 9999)
 
 class Game:
-    def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT,
-                 speed=consts.SPEED, food=None, scores=None):
+    def __init__(self, snakes=[], width=consts.WIDTH, height=consts.HEIGHT,
+                 speed=consts.SPEED, food=None, scores=None, host_addr="ABVD"):
         self.snakes = snakes
         self.width = width
         self.height = height
@@ -18,30 +23,32 @@ class Game:
         self.intend = self.width / 12
         self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
-        self.scores = [0 for _ in range(len(self.snakes))] if scores is None else scores
+        self.scores = [0 for _ in range(len(self.snakes))] if not scores else scores
         self.status = consts.STATUS_OK
         self.speed = speed
         self.play_surface = pygame.display.set_mode((self.width, self.height))
+        self.host_addr = host_addr
         pygame.display.set_caption('Snake Game')
         pygame.init()
-
-    def event_loop(self, change_to):
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                    change_to = "RIGHT"
-                elif event.key == pygame.K_LEFT or event.key == ord('a'):
-                    change_to = "LEFT"
-                elif event.key == pygame.K_UP or event.key == ord('w'):
-                    change_to = "UP"
-                elif event.key == pygame.K_DOWN or event.key == ord('s'):
-                    change_to = "DOWN"
-                elif event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    # sys.exit()
-            if event.type == pygame.QUIT:
-                return sys.exit()
-        return change_to
+    #
+    # @staticmethod
+    # def get_key(change_to=None):
+    #
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.KEYDOWN:
+    #             if event.key == pygame.K_RIGHT or event.key == ord('d'):
+    #                 change_to = "RIGHT"
+    #             elif event.key == pygame.K_LEFT or event.key == ord('a'):
+    #                 change_to = "LEFT"
+    #             elif event.key == pygame.K_UP or event.key == ord('w'):
+    #                 change_to = "UP"
+    #             elif event.key == pygame.K_DOWN or event.key == ord('s'):
+    #                 change_to = "DOWN"
+    #             elif event.key == pygame.K_ESCAPE:
+    #                 pygame.quit()
+    #         if event.type == pygame.QUIT:
+    #             return sys.exit()
+    #     return change_to
 
     def refresh_screen(self):
         alive = 1
@@ -128,22 +135,28 @@ class Game:
 
     @staticmethod
     def from_dict(data):
-        return Game(snakes=[Snake.from_dict(s) for s in data["snakes"]],
-                    width=data["width"], height=data["height"], speed=data["speed"],
-                    food=data["food_pos"], scores=data["scores"])
+        return Game([Snake.from_dict(s) for s in data["snakes"]],
+                    data["width"], data["height"], data["speed"],
+                    data["food_pos"], data["scores"])
+
+    def calculate(self):
+
+        for i, snake in enumerate(self.snakes):
+
+            if snake.alive:
+
+                snake.change_to = get_key(snake.name)  # self.event_loop(snake.change_to)
+                snake.validate_direction_and_change()
+                snake.change_head_position()
+                self.scores[i], self.food.pos = snake.body_mechanism(
+                    self.scores[i], self.food.pos, self.width, self.height)
+                snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
 
     def run(self):
         while True:
-            for i, snake in enumerate(self.snakes):
-                if snake.alive:
-                    snake.change_to = self.event_loop(snake.change_to)
-                    snake.validate_direction_and_change()
-                    snake.change_head_position()
-                    self.scores[i], self.food.pos = snake.body_mechanism(
-                        self.scores[i], self.food.pos, self.width, self.height)
-                    snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
+            self.calculate()
             self.render()
-            update_game_var("ABVD", "state", self.to_dict())
+            update_game_var(self.host_addr, "state", self.to_dict())
             self.refresh_screen()
 
     def render(self):
@@ -151,6 +164,22 @@ class Game:
         self.food.draw(self.play_surface)
         self.show_scores()
         pygame.display.flip()
+        self.refresh_screen()
+
+    @staticmethod
+    def game_calculate_once(host_addr):
+        availability = host_addr + "_AVAILABLE_" + str(RAND)
+        prev_state = get_game(host_addr)
+        pre_calc_game = Game.from_dict(prev_state["state"])
+
+        if not get_key(availability):
+            set_key(availability, True)
+            pre_calc_game.calculate()
+            prev_state["state"] = pre_calc_game.to_dict()
+            set_key(host_addr, prev_state)
+            set_key(availability, False)
+
+        pre_calc_game.render()
 
 # # crazy test
 # if __name__ == '__main__':
