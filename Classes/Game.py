@@ -82,9 +82,44 @@ class Game:
         s_font = pygame.font.SysFont(consts.FONT, int(self.width / 25))
         self.blit_text(self.play_surface, results, (int(self.height / 16), int(self.width / 23)), s_font)
 
+    def find_winner(self):
+        self.show_scores()
+        res = [snake.alive for snake in self.snakes]
+        # pygame.display.flip()
+        if res.count(True) == 1 or self.scores.count(10) == 1:
+        # if self.scores.count(10) == 1:
+            try:
+                ind_alive = res.index(True)
+            except ValueError:
+                ind_alive = None
+            try:
+                ind_scores = self.scores.index(10)
+            except ValueError:
+                ind_scores = None
+
+            ind_final = ind_alive if ind_alive is not None else ind_scores if ind_scores is not None else -1
+            if ind_final != -1:
+                winner = self.snakes[ind_final]
+                go_font = pygame.font.SysFont(consts.FONT, int(self.width / 10))
+                winner_font = pygame.font.SysFont(consts.FONT, int(self.width / 30))
+                go_surf = go_font.render('Game is over', True, pygame.Color(255, 0, 0))
+                winner_surf = winner_font.render('Winner is {}'.format(winner.name), True, pygame.Color(255, 0, 0))
+                go_rect = go_surf.get_rect()
+                winner_rect = winner_surf.get_rect()
+                go_rect.midtop = (self.width / 2, self.height / 4)
+                winner_rect.midtop = (self.width / 2, self.height / 2)
+                self.play_surface.blit(go_surf, go_rect)
+                self.play_surface.blit(winner_surf, winner_rect)
+                pygame.display.flip()
+                self.status = consts.STATUS_FINISHED
+                time.sleep(2)
+                pygame.quit()
+                sys.exit()
+
+
     def game_over(self):
         self.show_scores()
-        res = [not snake.alive for snake in self.snakes]
+        res = [snake.alive for snake in self.snakes]
         pygame.display.flip()
         if all(res):
             go_font = pygame.font.SysFont(consts.FONT, int(self.width / 10))
@@ -98,6 +133,7 @@ class Game:
             pygame.quit()
             sys.exit()
 
+
     def draw_snakes(self, snakes, play_surface):
         play_surface.fill(consts.WHITE)
         for snake in snakes:
@@ -110,10 +146,12 @@ class Game:
                                                                                                            pos[1], 10,
                                                                                                            10))
 
+
     def to_dict(self):
         return {"snakes": [snake.to_dict() for snake in self.snakes],
                 "width": self.width, "height": self.height, "speed": self.speed,
                 "food_pos": self.food.pos, "scores": self.scores}
+
 
     @staticmethod
     def from_dict(data):
@@ -121,8 +159,10 @@ class Game:
                     data["width"], data["height"], data["speed"],
                     data["food_pos"], data["scores"])
 
+
     def calculate(self):
         for i, snake in enumerate(self.snakes):
+            self.find_winner()
             if snake.alive:
                 snake.change_to = get_key(snake.name)  # self.event_loop(snake.change_to)
                 snake.validate_direction_and_change()
@@ -131,12 +171,14 @@ class Game:
                     self.scores[i], self.food.pos, self.width, self.height)
                 snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
 
+
     def run(self):
         while True:
             self.calculate()
             self.render()
             update_game_var(self.host_addr, "state", self.to_dict())
             self.refresh_screen()
+
 
     def render(self):
         key = self.get_key()
@@ -146,6 +188,7 @@ class Game:
         pygame.display.flip()
         self.refresh_screen()
         return key
+
 
     @staticmethod
     def game_calculate_once(host_addr, player_name):
