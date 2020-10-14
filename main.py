@@ -31,13 +31,13 @@ sum = 0
 frame_cont = 0
 
 
-def play(host):
+def play(host, player_name):
     import time
     while True:
         global sum, frame_cont, val
         start = time.time()
 
-        res = Game.game_calculate_once(host)
+        res = Game.game_calculate_once(host, player_name)
 
         end = time.time()
         cur_ = (start - end)
@@ -72,7 +72,7 @@ def connect_to_host():
 
             success = WaitSreen().run(host)
             if success:
-                play(host=host)
+                play(host=host, player_name=name)
             else:
                 sys.exit()
 
@@ -116,7 +116,7 @@ def create_host():
     game = Game(snakes, width=width, height=height, speed=speed)
     update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)
-    play(host=game_name)
+    play(host=game_name,player_name= "HOST")
 
 
 def run():
