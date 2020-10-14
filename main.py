@@ -1,7 +1,5 @@
 from threading import Thread
 
-import keyboard as keyboard
-
 from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Game import Game
 from Classes.Snake import Snake
@@ -92,25 +90,8 @@ def run():
             break
 
 
-def listen():
-    return
-    global val
-    while True:  # making a loop
-        if keyboard.is_pressed('d'):
-            val = "RIGHT"
-        elif keyboard.is_pressed('a'):
-            val = "LEFT"
-        elif keyboard.is_pressed('w'):
-            val = "UP"
-        elif keyboard.is_pressed('s'):
-            val = "DOWN"
-
-
 if __name__ == "__main__":
     thread = Thread(target=set_alive, )
-    thread2 = Thread(target=listen, )
-    thread2.daemon = True
-    thread2.start()
     thread.daemon = True
     thread.start()
     run()
