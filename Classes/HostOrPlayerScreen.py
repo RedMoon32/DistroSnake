@@ -1,5 +1,5 @@
 import sys
-
+import os
 import pygame
 
 from Classes import consts
@@ -10,7 +10,6 @@ class HostOrPlayerScreen:
         self.width = width
         self.height = height
         self.size = (self.width, self.height)
-
         pygame.init()
         pygame.display.set_caption('Host or player?')
 
@@ -64,9 +63,4 @@ class HostOrPlayerScreen:
                               move_parameter])
             screen.blit(host_text, (self.width * player_pos + _width / 2 + self.width / 2, self.height * player_pos))
 
-            pygame.display.update()
-
-# if __name__ == '__main__':
-#     auth = HostOrPlayerScreen()
-#     res = auth.run()
-#     print(res)
+            pygame.display.flip()
