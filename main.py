@@ -1,3 +1,4 @@
+import itertools
 from threading import Thread
 from time import sleep
 
@@ -33,6 +34,7 @@ def set_alive():
 sum = 0
 frame_cont = 0
 
+a = iter(itertools.cycle(["LEFT", "UP", "RIGHT", "DOWN"]))
 
 def play(host, player_name):
     import time
@@ -43,6 +45,8 @@ def play(host, player_name):
         start = time.time()
 
         res = Game.game_calculate_once(host, player_name)
+        res = next(a)
+
         set_key(name, val)
 
         end = time.time()

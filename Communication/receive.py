@@ -1,11 +1,19 @@
+import itertools
+
 import pygame
 from redis import Redis
 import json
 
 from Classes import consts
 
-# r = Redis(host='localhost', port=6379)
-r = Redis(host='10.91.89.94', port=6379)
+
+i = 0
+addresses = iter(itertools.cycle([Redis(host='localhost', port=6379), Redis(host='localhost', port=6380)]))
+# addresses = iter(itertools.cycle([6379, 6380]))
+client = next(addresses)  # Redis(host='localhost', port=6380)
+
+# r = Redis(host='10.91.89.94', port=6379)
+
 FREE_GAMES = 'FREE_GAMES'
 HOST = "HOST"
 
@@ -13,8 +21,6 @@ PLAYING = "PLAYING"
 PENDING = "PENDING"
 
 NEW_GAME = {"snakes": [], "master": HOST, "status": "PENDING", "state": None}
-
-i = 0
 
 
 def update_game_var(game_name, game_var, new_val):
@@ -43,8 +49,15 @@ def render_players(game_name, font, window, screen):
         screen.blit(game_text, (window.width / 2 - 200, window.height / 2), )
 
 
-def get_key(key, client=r):
-    res = client.get(key)
+def get_key(key):
+    global client
+    try:
+        res = client.get(key)
+    except:
+        client = next(addresses)
+        print("Failed, trying again with diff redis")
+        return get_key(key)
+
     if res:
         return json.loads(res)
     return None
@@ -54,8 +67,14 @@ def get_players_name(game_name):
     return get_game(game_name)["snakes"]
 
 
-def set_key(key, data, client=r, **kwargs):
-    return client.set(key, json.dumps(data), **kwargs)
+def set_key(key, data, **kwargs):
+    global client
+    try:
+        return client.set(key, json.dumps(data), **kwargs)
+    except:
+        client = next(addresses)
+        print("Failed, trying again with diff redis")
+        return set_key(key, data, **kwargs)
 
 
 def create_game(name):
