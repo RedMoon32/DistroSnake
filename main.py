@@ -27,10 +27,27 @@ def set_alive():
             set_key(name, val, ex=1)
 
 
+sum = 0
+frame_cont = 0
+
+
 def play(host):
+    import time
     while True:
-        global val
+        global sum, frame_cont, val
+        start = time.time()
+
         res = Game.game_calculate_once(host)
+
+        end = time.time()
+        cur_ = (start - end)
+        sum += cur_
+        frame_cont += 1
+        mean = sum / frame_cont
+        if cur_ < mean:
+            print('less')
+            time.sleep(mean - cur_)
+
         val = res
 
 
