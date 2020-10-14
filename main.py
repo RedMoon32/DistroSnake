@@ -1,4 +1,5 @@
 from threading import Thread
+from time import sleep
 
 from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Game import Game
@@ -20,11 +21,13 @@ set_alive_thread = None
 name = 'HOST'
 val = True
 
+stop_sign = False
+
 
 def set_alive():
-    while True:
+    while not stop_sign:
         if name:
-            set_key(name, val, ex=1)
+            set_key(name, val)
 
 
 sum = 0
@@ -33,11 +36,14 @@ frame_cont = 0
 
 def play(host, player_name):
     import time
+    global stop_sign
+    stop_sign = True
     while True:
         global sum, frame_cont, val
         start = time.time()
 
         res = Game.game_calculate_once(host, player_name)
+        set_key(name, val)
 
         end = time.time()
         cur_ = (start - end)
@@ -45,7 +51,6 @@ def play(host, player_name):
         frame_cont += 1
         mean = sum / frame_cont
         if cur_ < mean:
-            print('less')
             time.sleep(mean - cur_)
 
         val = res
@@ -116,7 +121,7 @@ def create_host():
     game = Game(snakes, width=width, height=height, speed=speed)
     update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)
-    play(host=game_name,player_name= "HOST")
+    play(host=game_name, player_name="HOST")
 
 
 def run():
