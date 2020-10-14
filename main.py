@@ -59,6 +59,22 @@ def connect_to_host():
             else:
                 sys.exit()
 
+def body_choice(ind, w, h):
+    # left up corner, goes down
+    if ind == 0:
+        return [[50, 50], [50, 40], [50, 30]], "DOWN"
+
+    # left down corner, goes right
+    elif ind == 1:
+        return [[70, h - 50], [60, h - 50], [50, h - 50]], "RIGHT"
+
+    # right down corner, moves up
+    elif ind == 2:
+        return [[w - 50, h - 50], [w - 40, h - 50], [w - 30, h - 50]], "UP"
+
+    # right upper corner, moves left
+    else:
+        return [[w - 50, 30], [w - 50, 40], [w - 50, 50]], "LEFT"
 
 def create_host():
     game_name = 'ABVD'
@@ -68,8 +84,13 @@ def create_host():
                         height).run(game_name)
     # вот здесь надо от юзеров получать змейки и кидать в массив
     # По идее, надо просто передать змейку хосту и там уже всё запускать
-
     snakes = [Snake(name, width=width, height=height) for name in get_game(game_name)["snakes"]]
+    for ind, snake in enumerate(snakes):
+        body, direction = body_choice(ind, width, height)
+        snake.body = body
+        snake.head_pos = body[0]
+        snake.direction = direction
+
     game = Game(snakes, width=width, height=height, speed=speed)
     update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)

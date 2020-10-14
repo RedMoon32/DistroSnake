@@ -92,10 +92,15 @@ class TestGame:
     def draw_snakes(self, snakes, play_surface):
         play_surface.fill(consts.WHITE)
         for snake in snakes:
-            for pos in snake.body:
-                pygame.draw.rect(
-                    play_surface, snake.color, pygame.Rect(
-                        pos[0], pos[1], 10, 10))
+            for ind, pos in enumerate(snake.body):
+                if ind >0:
+                    pygame.draw.rect(
+                        play_surface, snake.color, pygame.Rect(
+                            pos[0], pos[1], 10, 10))
+                else:
+                    pygame.draw.rect(
+                        play_surface, consts.BLACK, pygame.Rect(
+                            pos[0], pos[1], 10, 10))
 
     def to_dict(self):
         return {"snakes": [snake.to_dict() for snake in self.snakes],

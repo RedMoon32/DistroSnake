@@ -11,7 +11,9 @@ from Communication.receive import update_game_var, get_key, get_game, set_key
 a = iter(itertools.cycle(["LEFT", "UP", "RIGHT", "DOWN"]))
 
 import random
+
 RAND = random.randint(1000, 9999)
+
 
 class Game:
     def __init__(self, snakes=[], width=consts.WIDTH, height=consts.HEIGHT,
@@ -95,38 +97,17 @@ class Game:
             pygame.quit()
             # sys.exit()
 
-            # Кнопка для выхода, которую я не хз как делать
-            # done = False
-            # smallfont = pygame.font.SysFont('Corbel', 35)
-            # text = smallfont.render('quit', True, (255, 255, 255))
-            # _width = self.width / 10
-            # _height = self.height / 12
-            # while not done:
-            #     mouse = pygame.mouse.get_pos()
-            #     print(mouse)
-            #     for ev in pygame.event.get():
-            #         if ev.type == pygame.MOUSEBUTTONDOWN:
-            #             if self.width / 2 <= mouse[0] <= \
-            #                     self.width / 2 + 140 and \
-            #                     self.height / 2 <= mouse[1] <= \
-            #                     self.height / 2 + _height:
-            #                 pygame.quit()
-            #
-            #     if self.width / 2 <= mouse[0] <= self.width / 2 + 140 \
-            #             and self.height / 2 <= mouse[1] <= self.height / 2 + _height:
-            #         pygame.draw.rect(self.play_surface, (255, 0, 0), [self.width / 2, self.height / 2, 140, _height])
-            #     self.play_surface.blit(text, (self.width / 2 + 50, self.height / 2))
-            #
-            #     # updates the frames of the game
-            #     pygame.display.update()
-
     def draw_snakes(self, snakes, play_surface):
         play_surface.fill(consts.WHITE)
         for snake in snakes:
-            for pos in snake.body:
-                pygame.draw.rect(
-                    play_surface, snake.color, pygame.Rect(
-                        pos[0], pos[1], 10, 10))
+            for ind, pos in enumerate(snake.body):
+                pygame.draw.rect(play_surface, snake.color,
+                                 pygame.Rect(pos[0], pos[1], 10, 10)) if ind > 0 else pygame.draw.rect(play_surface,
+                                                                                                       consts.BLACK,
+                                                                                                       pygame.Rect(
+                                                                                                           pos[0],
+                                                                                                           pos[1], 10,
+                                                                                                           10))
 
     def to_dict(self):
         return {"snakes": [snake.to_dict() for snake in self.snakes],
@@ -140,11 +121,8 @@ class Game:
                     data["food_pos"], data["scores"])
 
     def calculate(self):
-
         for i, snake in enumerate(self.snakes):
-
             if snake.alive:
-
                 snake.change_to = get_key(snake.name)  # self.event_loop(snake.change_to)
                 snake.validate_direction_and_change()
                 snake.change_head_position()
@@ -173,7 +151,6 @@ class Game:
         availability = host_addr + "_AVAILABLE_" + str(RAND)
         prev_state = get_game(host_addr)
         pre_calc_game = Game.from_dict(prev_state["state"])
-
         if not get_key(availability):
             set_key(availability, True)
             pre_calc_game.calculate()
