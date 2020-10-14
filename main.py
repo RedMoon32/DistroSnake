@@ -1,7 +1,4 @@
 from threading import Thread
-from time import sleep
-
-import keyboard as keyboard
 
 from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Game import Game
@@ -9,8 +6,6 @@ from Classes.Snake import Snake
 from Classes.HostOrPlayerScreen import HostOrPlayerScreen
 from Classes.WaitScreen import WaitSreen
 from Classes.HostScreen import HostScreen
-from Classes import consts
-
 from Communication.receive import *
 
 width = consts.WIDTH
@@ -34,7 +29,9 @@ def set_alive():
 
 def play(host):
     while True:
-        Game.game_calculate_once(host)
+        global val
+        res = Game.game_calculate_once(host)
+        val = res
 
 
 def connect_to_host():
@@ -93,24 +90,8 @@ def run():
             break
 
 
-def listen():
-    global val
-    while True:  # making a loop
-        if keyboard.is_pressed('d'):
-            val = "RIGHT"
-        elif keyboard.is_pressed('a'):
-            val = "LEFT"
-        elif keyboard.is_pressed('w'):
-            val = "UP"
-        elif keyboard.is_pressed('s'):
-            val = "DOWN"
-
-
 if __name__ == "__main__":
     thread = Thread(target=set_alive, )
-    thread2 = Thread(target=listen, )
-    thread2.daemon = True
-    thread2.start()
     thread.daemon = True
     thread.start()
     run()
