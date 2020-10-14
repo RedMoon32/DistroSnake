@@ -152,7 +152,7 @@ class Game:
         availability = host_addr + "_AVAILABLE_" + str(RAND)
         prev_state = get_game(host_addr)
         pre_calc_game = Game.from_dict(prev_state["state"])
-        if not get_key(availability) and player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive ]:
+        if player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
             set_key(availability, True)
             pre_calc_game.calculate()
             prev_state["state"] = pre_calc_game.to_dict()
