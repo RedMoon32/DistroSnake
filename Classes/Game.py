@@ -8,7 +8,6 @@ from Classes.Food import Food
 from Classes.Snake import Snake
 from Communication.receive import update_game_var, get_key, get_game, set_key
 
-a = iter(itertools.cycle(["LEFT", "UP", "RIGHT", "DOWN"]))
 
 import random
 
@@ -153,7 +152,7 @@ class Game:
         prev_state = get_game(host_addr)
         pre_calc_game = Game.from_dict(prev_state["state"])
         if player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
-            set_key(availability, True)
+            set_key(availability, True, px=1500)
             pre_calc_game.calculate()
             prev_state["state"] = pre_calc_game.to_dict()
             set_key(host_addr, prev_state)
