@@ -11,3 +11,4 @@ LIGHT_GREY = (100, 100, 100)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 FONT = 'monaco'
+BLACK = (0, 0, 0)
