@@ -1,3 +1,4 @@
+import itertools
 import sys
 import pygame
 import time
@@ -7,9 +8,10 @@ from Classes.Food import Food
 from Classes.Snake import Snake
 from random import choice
 
+
 class TestGame:
     def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT,
-                 speed=consts.SPEED, food = None):
+                 speed=consts.SPEED, food=None):
         self.snakes = snakes
         self.width = width
         self.height = height
@@ -104,19 +106,19 @@ class TestGame:
     @staticmethod
     def from_dict(data):
         return TestGame([Snake.from_dict(s) for s in data["snakes"]],
-                    data["width"], data["height"], data["speed"],
-                    data["food_pos"])
+                        data["width"], data["height"], data["speed"],
+                        data["food_pos"])
 
     def run(self):
         timer = time.time()
         self.food = Food(self.width, self.height)
+        move = itertools.cycle(["DOWN", "DOWN", "DOWN", "RIGHT", "RIGHT", "RIGHT", "UP", "UP", "UP", "LEFT", "LEFT", "LEFT"])
+        next(move)
         while True:
             for i, snake in enumerate(self.snakes):
                 if snake.alive:
                     # snake.change_to = self.event_loop(snake.change_to)
-                    move = ["UP","DOWN", "LEFT", "RIGHT"]
-                    move.remove(snake.direction)
-                    snake.change_to = choice(move)
+                    snake.change_to = next(move)
                     snake.validate_direction_and_change()
                     snake.change_head_position()
                     self.scores[i], self.food.pos = snake.body_mechanism(
