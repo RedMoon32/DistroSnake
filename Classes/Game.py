@@ -30,25 +30,25 @@ class Game:
         self.host_addr = host_addr
         pygame.display.set_caption('Snake Game')
         pygame.init()
-    #
+
     # @staticmethod
-    # def get_key(change_to=None):
-    #
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.KEYDOWN:
-    #             if event.key == pygame.K_RIGHT or event.key == ord('d'):
-    #                 change_to = "RIGHT"
-    #             elif event.key == pygame.K_LEFT or event.key == ord('a'):
-    #                 change_to = "LEFT"
-    #             elif event.key == pygame.K_UP or event.key == ord('w'):
-    #                 change_to = "UP"
-    #             elif event.key == pygame.K_DOWN or event.key == ord('s'):
-    #                 change_to = "DOWN"
-    #             elif event.key == pygame.K_ESCAPE:
-    #                 pygame.quit()
-    #         if event.type == pygame.QUIT:
-    #             return sys.exit()
-    #     return change_to
+    def get_key(self, change_to=None):
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                    change_to = "RIGHT"
+                elif event.key == pygame.K_LEFT or event.key == ord('a'):
+                    change_to = "LEFT"
+                elif event.key == pygame.K_UP or event.key == ord('w'):
+                    change_to = "UP"
+                elif event.key == pygame.K_DOWN or event.key == ord('s'):
+                    change_to = "DOWN"
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+            if event.type == pygame.QUIT:
+                return sys.exit()
+        return change_to
 
     def refresh_screen(self):
         alive = 1
@@ -160,11 +160,13 @@ class Game:
             self.refresh_screen()
 
     def render(self):
+        key = self.get_key()
         self.draw_snakes(self.snakes, self.play_surface)
         self.food.draw(self.play_surface)
         self.show_scores()
         pygame.display.flip()
         self.refresh_screen()
+        return key
 
     @staticmethod
     def game_calculate_once(host_addr):
@@ -179,7 +181,7 @@ class Game:
             set_key(host_addr, prev_state)
             set_key(availability, False)
 
-        pre_calc_game.render()
+        return pre_calc_game.render()
 
 # # crazy test
 # if __name__ == '__main__':
