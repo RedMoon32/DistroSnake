@@ -6,20 +6,20 @@ import time
 from Classes import consts
 from Classes.Food import Food
 from Classes.Snake import Snake
-from random import choice
+from Communication.receive import update_game_var
 
 
 class TestGame:
     def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT,
-                 speed=consts.SPEED, food=None):
+                 speed=consts.SPEED, food=None, scores=None):
         self.snakes = snakes
         self.width = width
         self.height = height
-        self.food = food if food is not None else Food(self.width, self.height)
+        self.food = Food(food[0], food[1]) if food is not None else Food(self.width / 2, self.height / 2)
         self.intend = self.width / 12
         self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
-        self.scores = [0 for _ in range(len(self.snakes))]
+        self.scores = [0 for _ in range(len(self.snakes))] if scores is None else scores
         self.status = consts.STATUS_OK
         self.speed = speed
         self.play_surface = pygame.display.set_mode((self.width, self.height))
@@ -45,9 +45,8 @@ class TestGame:
         return change_to
 
     def refresh_screen(self):
-        pygame.display.flip()
         alive = 1
-        self.fps_controller.tick(alive * self.speed)
+        self.fps_controller.tick(max(1, alive * self.speed))
 
     def blit_text(self, surface, text, pos, font):
         words = [word.split(' ') for word in text.splitlines()]
@@ -101,17 +100,15 @@ class TestGame:
     def to_dict(self):
         return {"snakes": [snake.to_dict() for snake in self.snakes],
                 "width": self.width, "height": self.height, "speed": self.speed,
-                "food_pos": self.food.pos}
+                "food_pos": self.food.pos, "scores": self.scores}
 
     @staticmethod
     def from_dict(data):
-        return TestGame([Snake.from_dict(s) for s in data["snakes"]],
-                        data["width"], data["height"], data["speed"],
-                        data["food_pos"])
+        return TestGame(snakes=[Snake.from_dict(s) for s in data["snakes"]],
+                        width=data["width"], height=data["height"], speed=data["speed"],
+                        food=data["food_pos"], scores=data["scores"])
 
     def run(self):
-        timer = time.time()
-        self.food = Food(self.width, self.height)
         move = itertools.cycle(["DOWN", "DOWN", "DOWN", "RIGHT", "RIGHT", "RIGHT", "UP", "UP", "UP", "LEFT", "LEFT", "LEFT"])
         next(move)
         while True:
@@ -123,8 +120,21 @@ class TestGame:
                     snake.change_head_position()
                     self.scores[i], self.food.pos = snake.body_mechanism(
                         self.scores[i], self.food.pos, self.width, self.height)
+                    snake.score = self.scores[i]
                     snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
-            self.draw_snakes(self.snakes, self.play_surface)
-            self.food.draw(self.play_surface)
-            self.show_scores()
+            self.render()
+            update_game_var("ABVD", "state", self.to_dict())
             self.refresh_screen()
+
+    def render(self):
+        self.draw_snakes(self.snakes, self.play_surface)
+        self.food.draw(self.play_surface)
+        self.show_scores()
+        pygame.display.flip()
+
+# # crazy test
+# if __name__ == '__main__':
+#     snakes = [Snake("dimon", width=720, height=460),
+#               Snake("rinat", width=720, height=460)]
+#     # Snake("sanya", width=720, height=460)]
+#     game = Game(snakes, width=720, height=460).run()
