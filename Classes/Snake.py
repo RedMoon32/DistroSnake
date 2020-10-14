@@ -9,7 +9,7 @@ class Snake:
     def __init__(self, name, width=consts.WIDTH, height=consts.HEIGHT, head_pos=None,
                  body=None, direction=None,
                  alive=True, died_from_wall=False, died_from_snake=False, died_from_self=False,
-                 color=None):
+                 color=None, score=0):
         self.name = name
         self.width = width
         self.height = height
@@ -24,6 +24,7 @@ class Snake:
         self.died_from_wall = died_from_wall
         self.died_from_snake = died_from_snake
         self.died_from_self = died_from_self
+        self.score = score
 
     def to_dict(self):
         return {"name": self.name, "width": self.width, "height": self.height, "direction": self.direction,

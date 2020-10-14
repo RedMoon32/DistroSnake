@@ -10,15 +10,15 @@ from Communication.receive import update_game_var
 
 class Game:
     def __init__(self, snakes, width=consts.WIDTH, height=consts.HEIGHT,
-                 speed=consts.SPEED, food=None):
+                 speed=consts.SPEED, food=None, scores=None):
         self.snakes = snakes
         self.width = width
         self.height = height
-        self.food = Food(food[0], food[1]) if food is not None else Food(self.width/2, self.height/2)
+        self.food = Food(food[0], food[1]) if food is not None else Food(self.width / 2, self.height / 2)
         self.intend = self.width / 12
         self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
-        self.scores = [0 for _ in range(len(self.snakes))]
+        self.scores = [0 for _ in range(len(self.snakes))] if scores is None else scores
         self.status = consts.STATUS_OK
         self.speed = speed
         self.play_surface = pygame.display.set_mode((self.width, self.height))
@@ -124,16 +124,15 @@ class Game:
     def to_dict(self):
         return {"snakes": [snake.to_dict() for snake in self.snakes],
                 "width": self.width, "height": self.height, "speed": self.speed,
-                "food_pos": self.food.pos}
+                "food_pos": self.food.pos, "scores": self.scores}
 
     @staticmethod
     def from_dict(data):
         return Game(snakes=[Snake.from_dict(s) for s in data["snakes"]],
                     width=data["width"], height=data["height"], speed=data["speed"],
-                    food=data["food_pos"])
+                    food=data["food_pos"], scores=data["scores"])
 
     def run(self):
-
         while True:
             for i, snake in enumerate(self.snakes):
                 if snake.alive:
@@ -142,6 +141,7 @@ class Game:
                     snake.change_head_position()
                     self.scores[i], self.food.pos = snake.body_mechanism(
                         self.scores[i], self.food.pos, self.width, self.height)
+                    snake.score = self.scores[i]
                     snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
             self.render()
             update_game_var("ABVD", "state", self.to_dict())

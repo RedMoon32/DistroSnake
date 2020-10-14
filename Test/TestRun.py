@@ -74,11 +74,11 @@ def create_host():
                         host_address, width,
                         height).run(host_address)
     # вот здесь надо от юзеров получать змейки и кидать в массив
-    goes_down_snake = Snake(name="downer", width=width, height=height, head_pos=[10, 10], body=[[20, 10], [30, 10]]
+    goes_down_snake = Snake(name="downer", width=width, height=height, head_pos=[10, 10], body=[[10, 10],[20, 10], [30, 10]]
                             , direction="DOWN", alive=True, died_from_self=False, died_from_snake=False,
                             died_from_wall=False)
 
-    goes_right_snake = Snake(name="righter", width=width, height=height, head_pos=[60, 60], body=[[50, 60], [40, 60]]
+    goes_right_snake = Snake(name="righter", width=width, height=height, head_pos=[60, 60], body=[[60, 60],[50, 60], [40, 60]]
                              , direction="RIGHT", alive=True, died_from_self=False, died_from_snake=False,
                              died_from_wall=False)
     snakes = [goes_down_snake, goes_right_snake]
