@@ -1,1 +1,1 @@
-docker start redis2
+docker start redis1

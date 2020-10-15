@@ -17,6 +17,7 @@ def get_redis_instances():
 def set_redis_instances(new_list):
     global list_
     list_ = new_list
+    list_.append(['10.91.82.106', '6380'])
     return
 
 
@@ -58,7 +59,7 @@ def render_players(game_name, font, window, screen):
             if not alive_:
                 players.remove(player)
                 set_key(game_name, res)
-            else:
+            elif alive_ != '-':
                 instances.append(alive_)
         set_redis_instances(instances)
         if HOST in players:

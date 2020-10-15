@@ -57,6 +57,7 @@ def play(host, player_name):
 
 def connect_to_host():
     host = None
+    host = "abvd"
     while host not in find_games():
         host = DataEnteringScreen(
             "Initialization window", "Enter host", width, height
@@ -68,6 +69,7 @@ def connect_to_host():
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
+        name = "ok"
         while not name:
             name = DataEnteringScreen(
                 "What is your name?", "Enter non empty name", width, height
@@ -106,6 +108,7 @@ def body_choice(ind, w, h):
 
 def create_host():
     game_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
+    game_name = "abvd"
     create_game(game_name)
     res, _ = HostScreen("Your host data", game_name, width, height).run(game_name)
     # вот здесь надо от юзеров получать змейки и кидать в массив
