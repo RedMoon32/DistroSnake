@@ -51,17 +51,10 @@ def play(host, player_name):
         res = Game.game_calculate_once(host, player_name)
         # res = next(a)
 
-        set_key(name, val)
+        setted = set_key(name, val)
 
-        end = time.time()
-        cur_ = (start - end)
-        sum += cur_
-        frame_cont += 1
-        mean = sum / frame_cont
-        if cur_ < mean:
-            time.sleep(mean - cur_)
-
-        val = res
+        if res:
+            val = res
 
 
 def connect_to_host():
@@ -127,7 +120,7 @@ def create_host():
             snake.direction = direction
 
     game = Game(snakes, width=width, height=height, speed=speed)
-    game.scores = [9 for i in game.scores]
+    game.scores = [0 for i in game.scores]
     update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)
     play(host=game_name, player_name="HOST")

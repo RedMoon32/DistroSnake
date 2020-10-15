@@ -14,8 +14,8 @@ list_ = [Redis(host='localhost', port=6379), Redis(host='localhost', port=6380)]
 
 for db in list_:
     try:
-        if not db.get(FLUSHED):
-            db.set(FLUSHED, True)
+        if len(db.client_list()) == 1:
+            print("Flushed redis instance")
             db.flushdb()
     except:
         pass
@@ -129,7 +129,8 @@ def find_games():
 
 def start_game(game_name):
     games: list = get_key(FREE_GAMES)
-    if game_name in games:
+
+    if games is not None and game_name in games:
         games.remove(game_name)
         set_key(FREE_GAMES, games)
         return True

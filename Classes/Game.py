@@ -182,7 +182,7 @@ class Game:
         pre_calc_game = Game.from_dict(prev_state["state"])
 
         if last["frame_id"] == prev_state["frame_id"] and player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
-            set_key(availability, True, px=1500)
+            set_key(availability, True)
             pre_calc_game.calculate()
             prev_state["frame_id"] += 1
             prev_state["state"] = pre_calc_game.to_dict()
