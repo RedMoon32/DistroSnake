@@ -34,7 +34,11 @@ def set_alive():
 sum = 0
 frame_cont = 0
 
-a = iter(itertools.cycle(["LEFT", "UP", "RIGHT", "DOWN"]))
+count = 10
+dirs = ["DOWN", "RIGHT", "UP", "LEFT"]
+real_dirs = [dir for dir in dirs for i in range(count)]
+a = iter(itertools.cycle(real_dirs))
+
 
 def play(host, player_name):
     import time
@@ -123,6 +127,7 @@ def create_host():
             snake.direction = direction
 
     game = Game(snakes, width=width, height=height, speed=speed)
+    game.scores = [5 for i in game.scores]
     update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)
     play(host=game_name, player_name="HOST")

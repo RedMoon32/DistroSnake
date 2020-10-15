@@ -7,13 +7,16 @@ import json
 from Classes import consts
 
 i = 0
-addresses = iter(itertools.cycle([Redis(host='localhost', port=6379), Redis(host='localhost', port=6380)]))
-# addresses = iter(itertools.cycle([6379, 6380]))
-client = next(addresses)  # Redis(host='localhost', port=6380)
 
-# r = Redis(host='10.91.89.94', port=6379)
+list_ = [Redis(host='localhost', port=6379), Redis(host='localhost', port=6380)]
+addresses = iter(itertools.cycle(list_))
+
+client = next(addresses)
+
 FREE_GAMES = 'FREE_GAMES'
 HOST = "HOST"
+REDIS_FOUND = "FOUND_REDIS"
+WAITING = "WAITING"
 
 PLAYING = "PLAYING"
 PENDING = "PENDING"
@@ -52,8 +55,7 @@ def get_key(key):
     try:
         res = client.get(key)
     except:
-        client = next(addresses)
-        print("Failed, trying again with diff redis")
+        repair_client()
         return get_key(key)
 
     if res:
@@ -65,12 +67,29 @@ def get_players_name(game_name):
     return get_game(game_name)["snakes"]
 
 
+def repair_client():
+    global client
+    client = next(addresses)
+    if client.ping():
+        if not get_key(REDIS_FOUND):
+            set_key(REDIS_FOUND, True)
+            set_key(WAITING, True, ex=3)
+        while get_key(WAITING):
+            pass
+    else:
+        if client == list_[-1]:
+            repair_client()
+        print("All redis nodes checked, no working redis instance found, exiting the game")
+        import sys
+        sys.exit(-1)
+
+
 def set_key(key, data, **kwargs):
     global client
     try:
         return client.set(key, json.dumps(data), **kwargs)
     except:
-        client = next(addresses)
+        repair_client()
         print("Failed, trying again with diff redis")
         return set_key(key, data, **kwargs)
 

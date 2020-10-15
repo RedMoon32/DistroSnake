@@ -151,7 +151,7 @@ class Game:
     def game_calculate_once(host_addr, player_name):
         global last
 
-        availability = host_addr + "_AVAILABLE_" + str(RAND)
+        availability = host_addr + "_AVAILABLE_"
         prev_state = get_game(host_addr)
         if prev_state is None:
             prev_state = last
@@ -166,7 +166,6 @@ class Game:
             set_key(availability, False)
 
         last = prev_state
-
         return pre_calc_game.render()
 
 # # crazy test
