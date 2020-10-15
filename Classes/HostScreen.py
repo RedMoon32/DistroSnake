@@ -32,27 +32,43 @@ class HostScreen:
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if position * self.width <= mouse[0] <= 1.5 * position * self.width \
-                            and position * self.height <= mouse[1] <= position * self.height + move_parameter:
+                    if (
+                        position * self.width <= mouse[0] <= 1.5 * position * self.width
+                        and position * self.height
+                        <= mouse[1]
+                        <= position * self.height + move_parameter
+                    ):
                         if start_game(game_name):
                             return True, pygame.quit()
                         else:
                             print("Error starting game")
                             sys.exit(0)
 
-            game_text = smallfont.render('Yout host is: {}'.format(self.host), True, consts.WHITE)
+            game_text = smallfont.render(
+                "Yout host is: {}".format(self.host), True, consts.WHITE
+            )
             screen.blit(game_text, (position * self.width, position * self.height / 2))
 
-            pygame.draw.rect(screen,
-                             consts.BLUE,
-                             [position * self.width, position * self.height, int(5 * move_parameter), move_parameter])
+            pygame.draw.rect(
+                screen,
+                consts.BLUE,
+                [
+                    position * self.width,
+                    position * self.height,
+                    int(5 * move_parameter),
+                    move_parameter,
+                ],
+            )
 
-            quit_text = smallfont.render('Start game! ', True, consts.WHITE)
-            screen.blit(quit_text, (position * self.width + _width / 2, position * self.height))
+            quit_text = smallfont.render("Start game! ", True, consts.WHITE)
+            screen.blit(
+                quit_text, (position * self.width + _width / 2, position * self.height)
+            )
 
             render_players(game_name, smallfont, self, screen)
 
             pygame.display.update()
+
 
 # if __name__ == '__main__':
 #     auth = HostScreen('Host data', '<сюда хост>', 720, 460).run()

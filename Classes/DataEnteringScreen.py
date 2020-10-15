@@ -20,9 +20,10 @@ class DataEnteringScreen:
     def run(self, game_name=None):
         screen = pygame.display.set_mode(self.size)
         font = pygame.font.Font(None, int(self.width / 20))
-        input_box = pygame.Rect(5 * self.width / 16, 5 * self.height / 16,
-                                self.width, self.height / 15)
-        active, text, done = False, '', False
+        input_box = pygame.Rect(
+            5 * self.width / 16, 5 * self.height / 16, self.width, self.height / 15
+        )
+        active, text, done = False, "", False
 
         while not done:
             for event in pygame.event.get():
@@ -39,13 +40,23 @@ class DataEnteringScreen:
                         text += event.unicode
 
             screen.fill(consts.GREY)
-            screen.blit(font.render(self.text, True, consts.WHITE), (self.width / 2.5, self.width / 6.5))
+            screen.blit(
+                font.render(self.text, True, consts.WHITE),
+                (self.width / 2.5, self.width / 6.5),
+            )
             txt_surface = font.render(text, True, consts.WHITE)
-            input_box.w = max(self.width / 3, txt_surface.get_width() + int(self.width / 64))
-            screen.blit(txt_surface, (input_box.x + int(self.height / 43), input_box.y + int(self.height / 64)))
+            input_box.w = max(
+                self.width / 3, txt_surface.get_width() + int(self.width / 64)
+            )
+            screen.blit(
+                txt_surface,
+                (
+                    input_box.x + int(self.height / 43),
+                    input_box.y + int(self.height / 64),
+                ),
+            )
             pygame.draw.rect(screen, consts.WHITE, input_box, 2)
 
             render_players(game_name, font, self, screen)
 
             pygame.display.flip()
-

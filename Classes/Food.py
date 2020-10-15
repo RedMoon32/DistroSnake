@@ -13,6 +13,7 @@ class Food:
 
     def draw(self, play_surface):
         pygame.draw.rect(
-            play_surface, self.color, pygame.Rect(
-                self.pos[0], self.pos[1],
-                self.size_x, self.size_y))
+            play_surface,
+            self.color,
+            pygame.Rect(self.pos[0], self.pos[1], self.size_x, self.size_y),
+        )

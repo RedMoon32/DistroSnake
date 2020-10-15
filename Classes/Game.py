@@ -16,12 +16,24 @@ last = {"frame_id": 0}
 
 
 class Game:
-    def __init__(self, snakes=[], width=consts.WIDTH, height=consts.HEIGHT,
-                 speed=consts.SPEED, food=None, scores=None, host_addr="ABVD"):
+    def __init__(
+        self,
+        snakes=[],
+        width=consts.WIDTH,
+        height=consts.HEIGHT,
+        speed=consts.SPEED,
+        food=None,
+        scores=None,
+        host_addr="ABVD",
+    ):
         self.snakes = snakes
         self.width = width
         self.height = height
-        self.food = Food(food[0], food[1]) if food is not None else Food(self.width / 2, self.height / 2)
+        self.food = (
+            Food(food[0], food[1])
+            if food is not None
+            else Food(self.width / 2, self.height / 2)
+        )
         self.intend = self.width / 12
         self.time_interval = consts.SAVE_TIME_INTERVAL_SEC
         self.fps_controller = pygame.time.Clock()
@@ -30,7 +42,7 @@ class Game:
         self.speed = speed
         self.play_surface = pygame.display.set_mode((self.width, self.height))
         self.host_addr = host_addr
-        pygame.display.set_caption('Snake Game')
+        pygame.display.set_caption("Snake Game")
         pygame.init()
 
     # @staticmethod
@@ -38,13 +50,13 @@ class Game:
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                if event.key == pygame.K_RIGHT or event.key == ord("d"):
                     change_to = "RIGHT"
-                elif event.key == pygame.K_LEFT or event.key == ord('a'):
+                elif event.key == pygame.K_LEFT or event.key == ord("a"):
                     change_to = "LEFT"
-                elif event.key == pygame.K_UP or event.key == ord('w'):
+                elif event.key == pygame.K_UP or event.key == ord("w"):
                     change_to = "UP"
-                elif event.key == pygame.K_DOWN or event.key == ord('s'):
+                elif event.key == pygame.K_DOWN or event.key == ord("s"):
                     change_to = "DOWN"
                 elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
@@ -58,8 +70,8 @@ class Game:
         self.fps_controller.tick(max(1, alive * self.speed))
 
     def blit_text(self, surface, text, pos, font):
-        words = [word.split(' ') for word in text.splitlines()]
-        space = font.size(' ')[0]
+        words = [word.split(" ") for word in text.splitlines()]
+        space = font.size(" ")[0]
         max_width, max_height = surface.get_size()
         x, y = pos
         for i, line in enumerate(words):
@@ -75,12 +87,17 @@ class Game:
             y += word_height  # Start on new row.
 
     def show_scores(self):
-        results = ''
+        results = ""
         for i, snake in enumerate(self.snakes):
-            results += '{0}. Score: {1}\n'.format(snake.name, self.scores[i])
+            results += "{0}. Score: {1}\n".format(snake.name, self.scores[i])
 
         s_font = pygame.font.SysFont(consts.FONT, int(self.width / 25))
-        self.blit_text(self.play_surface, results, (int(self.height / 16), int(self.width / 23)), s_font)
+        self.blit_text(
+            self.play_surface,
+            results,
+            (int(self.height / 16), int(self.width / 23)),
+            s_font,
+        )
 
     def find_winner(self):
         self.show_scores()
@@ -96,11 +113,19 @@ class Game:
             except ValueError:
                 ind_scores = None
 
-            ind_final = ind_alive if ind_alive is not None else ind_scores if ind_scores is not None else -1
+            ind_final = (
+                ind_alive
+                if ind_alive is not None
+                else ind_scores
+                if ind_scores is not None
+                else -1
+            )
             if ind_final != -1:
                 winner = self.snakes[ind_final]
                 winner_font = pygame.font.SysFont(consts.FONT, int(self.width / 10))
-                winner_surf = winner_font.render('Winner is {}'.format(winner.name), True, pygame.Color(255, 0, 0))
+                winner_surf = winner_font.render(
+                    "Winner is {}".format(winner.name), True, pygame.Color(255, 0, 0)
+                )
                 winner_rect = winner_surf.get_rect()
                 winner_rect.midtop = (self.width / 2, self.height / 3)
                 self.play_surface.blit(winner_surf, winner_rect)
@@ -116,7 +141,7 @@ class Game:
         pygame.display.flip()
         if all(res):
             go_font = pygame.font.SysFont(consts.FONT, int(self.width / 10))
-            go_surf = go_font.render('Game is over', True, pygame.Color(255, 0, 0))
+            go_surf = go_font.render("Game is over", True, pygame.Color(255, 0, 0))
             go_rect = go_surf.get_rect()
             go_rect.midtop = (self.width / 2, self.height / 30)
             self.play_surface.blit(go_surf, go_rect)
@@ -130,34 +155,47 @@ class Game:
         play_surface.fill(consts.WHITE)
         for snake in snakes:
             for ind, pos in enumerate(snake.body):
-                pygame.draw.rect(play_surface, snake.color,
-                                 pygame.Rect(pos[0], pos[1], 10, 10)) if ind > 0 else pygame.draw.rect(play_surface,
-                                                                                                       consts.BLACK,
-                                                                                                       pygame.Rect(
-                                                                                                           pos[0],
-                                                                                                           pos[1], 10,
-                                                                                                           10))
+                pygame.draw.rect(
+                    play_surface, snake.color, pygame.Rect(pos[0], pos[1], 10, 10)
+                ) if ind > 0 else pygame.draw.rect(
+                    play_surface, consts.BLACK, pygame.Rect(pos[0], pos[1], 10, 10)
+                )
 
     def to_dict(self):
-        return {"snakes": [snake.to_dict() for snake in self.snakes],
-                "width": self.width, "height": self.height, "speed": self.speed,
-                "food_pos": self.food.pos, "scores": self.scores}
+        return {
+            "snakes": [snake.to_dict() for snake in self.snakes],
+            "width": self.width,
+            "height": self.height,
+            "speed": self.speed,
+            "food_pos": self.food.pos,
+            "scores": self.scores,
+        }
 
     @staticmethod
     def from_dict(data):
-        return Game([Snake.from_dict(s) for s in data["snakes"]],
-                    data["width"], data["height"], data["speed"],
-                    data["food_pos"], data["scores"])
+        return Game(
+            [Snake.from_dict(s) for s in data["snakes"]],
+            data["width"],
+            data["height"],
+            data["speed"],
+            data["food_pos"],
+            data["scores"],
+        )
 
     def calculate(self):
         for i, snake in enumerate(self.snakes):
             if snake.alive:
-                snake.change_to = get_key(snake.name)  # self.event_loop(snake.change_to)
+                snake.change_to = get_key(
+                    snake.name
+                )  # self.event_loop(snake.change_to)
                 snake.validate_direction_and_change()
                 snake.change_head_position()
                 self.scores[i], self.food.pos = snake.body_mechanism(
-                    self.scores[i], self.food.pos, self.width, self.height)
-                snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
+                    self.scores[i], self.food.pos, self.width, self.height
+                )
+                snake.check_for_boundaries(
+                    self.snakes, self.game_over, self.width, self.height
+                )
 
     def render(self):
         self.find_winner()
@@ -175,13 +213,18 @@ class Game:
 
         availability = host_addr + "_AVAILABLE_"
         prev_state = get_game(host_addr)
-        if prev_state is None or prev_state['state'] is None:
+        if prev_state is None or prev_state["state"] is None:
             prev_state = last
             set_key(host_addr, prev_state)
 
         pre_calc_game = Game.from_dict(prev_state["state"])
 
-        if last["frame_id"] == prev_state["frame_id"] and player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
+        if (
+            last["frame_id"] == prev_state["frame_id"]
+            and player_name
+            in [snake.name for snake in pre_calc_game.snakes if snake.alive]
+            and not get_key(availability)
+        ):
             set_key(availability, True)
             pre_calc_game.calculate()
             prev_state["frame_id"] += 1
@@ -192,6 +235,7 @@ class Game:
         last = prev_state
 
         return pre_calc_game.render()
+
 
 # # crazy test
 # if __name__ == '__main__':

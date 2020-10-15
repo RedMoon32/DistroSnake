@@ -19,7 +19,7 @@ from tkinter import messagebox
 
 set_alive_thread = None
 
-name = 'HOST'
+name = "HOST"
 val = True
 
 stop_sign = False
@@ -42,6 +42,7 @@ a = iter(itertools.cycle(real_dirs))
 
 def play(host, player_name):
     import time
+
     global stop_sign
     stop_sign = True
     while True:
@@ -60,17 +61,21 @@ def play(host, player_name):
 def connect_to_host():
     host = "ABVD"
     while host not in find_games():
-        host = DataEnteringScreen('Initialization window', 'Enter host', width, height).run()
+        host = DataEnteringScreen(
+            "Initialization window", "Enter host", width, height
+        ).run()
         if host not in find_games():
             Tk().wm_withdraw()  # to hide the main window
-            messagebox.showinfo('Error', 'Host not found, try again')
+            messagebox.showinfo("Error", "Host not found, try again")
     global name
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
         name = "OK"
         while not name:
-            name = DataEnteringScreen('What is your name?', 'Enter non empty name', width, height).run()
+            name = DataEnteringScreen(
+                "What is your name?", "Enter non empty name", width, height
+            ).run()
 
         connect_to_game(host, name)
 
@@ -104,14 +109,15 @@ def body_choice(ind, w, h):
 
 
 def create_host():
-    game_name = 'ABVD'
+    game_name = "ABVD"
     create_game(game_name)
-    res, _ = HostScreen('Your host data',
-                        game_name, width,
-                        height).run(game_name)
+    res, _ = HostScreen("Your host data", game_name, width, height).run(game_name)
     # вот здесь надо от юзеров получать змейки и кидать в массив
     # По идее, надо просто передать змейку хосту и там уже всё запускать
-    snakes = [Snake(name, width=width, height=height) for name in get_game(game_name)["snakes"]]
+    snakes = [
+        Snake(name, width=width, height=height)
+        for name in get_game(game_name)["snakes"]
+    ]
     for ind, snake in enumerate(snakes):
         body, direction = body_choice(ind, width, height)
         if body is not None and direction is not None:
@@ -141,7 +147,9 @@ def run():
 
 
 if __name__ == "__main__":
-    thread = Thread(target=set_alive, )
+    thread = Thread(
+        target=set_alive,
+    )
     thread.daemon = True
     thread.start()
     run()
