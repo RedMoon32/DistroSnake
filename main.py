@@ -71,7 +71,7 @@ def connect_to_host():
         name = None
         while not name:
             name = DataEnteringScreen(
-                "Enter nickname", width, height
+                "Enter nickname", "Enter nickname?", width, height
             ).run()
 
         connect_to_game(host, name)
