@@ -15,8 +15,8 @@ list_ = [Redis(host='localhost', port=6379), Redis(host='localhost', port=6380)]
 for db in list_:
     try:
         if not db.get(FLUSHED):
+            db.set(FLUSHED, True)
             db.flushdb()
-            db.set("FLUSHED", True)
     except:
         pass
 

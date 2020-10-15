@@ -12,7 +12,7 @@ import random
 
 RAND = random.randint(1000, 9999)
 
-last = None
+last = {"frame_id": 0}
 
 
 class Game:
@@ -110,7 +110,6 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
-
     def game_over(self):
         self.show_scores()
         res = [snake.alive for snake in self.snakes]
@@ -127,7 +126,6 @@ class Game:
             pygame.quit()
             sys.exit()
 
-
     def draw_snakes(self, snakes, play_surface):
         play_surface.fill(consts.WHITE)
         for snake in snakes:
@@ -140,12 +138,10 @@ class Game:
                                                                                                            pos[1], 10,
                                                                                                            10))
 
-
     def to_dict(self):
         return {"snakes": [snake.to_dict() for snake in self.snakes],
                 "width": self.width, "height": self.height, "speed": self.speed,
                 "food_pos": self.food.pos, "scores": self.scores}
-
 
     @staticmethod
     def from_dict(data):
@@ -153,10 +149,8 @@ class Game:
                     data["width"], data["height"], data["speed"],
                     data["food_pos"], data["scores"])
 
-
     def calculate(self):
         for i, snake in enumerate(self.snakes):
-            self.find_winner()
             if snake.alive:
                 snake.change_to = get_key(snake.name)  # self.event_loop(snake.change_to)
                 snake.validate_direction_and_change()
@@ -165,16 +159,8 @@ class Game:
                     self.scores[i], self.food.pos, self.width, self.height)
                 snake.check_for_boundaries(self.snakes, self.game_over, self.width, self.height)
 
-
-    def run(self):
-        while True:
-            self.calculate()
-            self.render()
-            update_game_var(self.host_addr, "state", self.to_dict())
-            self.refresh_screen()
-
-
     def render(self):
+        self.find_winner()
         key = self.get_key()
         self.draw_snakes(self.snakes, self.play_surface)
         self.food.draw(self.play_surface)
@@ -182,7 +168,6 @@ class Game:
         pygame.display.flip()
         self.refresh_screen()
         return key
-
 
     @staticmethod
     def game_calculate_once(host_addr, player_name):
@@ -196,14 +181,13 @@ class Game:
 
         pre_calc_game = Game.from_dict(prev_state["state"])
 
-        if player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
+        if last["frame_id"] == prev_state["frame_id"] and player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
             set_key(availability, True, px=1500)
             pre_calc_game.calculate()
             prev_state["frame_id"] += 1
             prev_state["state"] = pre_calc_game.to_dict()
             set_key(host_addr, prev_state)
             set_key(availability, False)
-
 
         last = prev_state
 

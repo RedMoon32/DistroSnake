@@ -49,7 +49,7 @@ def play(host, player_name):
         start = time.time()
 
         res = Game.game_calculate_once(host, player_name)
-        res = next(a)
+        # res = next(a)
 
         set_key(name, val)
 
@@ -127,7 +127,7 @@ def create_host():
             snake.direction = direction
 
     game = Game(snakes, width=width, height=height, speed=speed)
-    game.scores = [5 for i in game.scores]
+    game.scores = [9 for i in game.scores]
     update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)
     play(host=game_name, player_name="HOST")
