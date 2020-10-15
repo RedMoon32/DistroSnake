@@ -6,12 +6,14 @@ import json
 
 from Classes import consts
 
+
 i = 0
 
 list_ = [Redis(host='localhost', port=6379), Redis(host='localhost', port=6380)]
 addresses = iter(itertools.cycle(list_))
 
 client = next(addresses)
+
 
 FREE_GAMES = 'FREE_GAMES'
 HOST = "HOST"
