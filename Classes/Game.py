@@ -17,14 +17,14 @@ last = {"frame_id": 0}
 
 class Game:
     def __init__(
-        self,
-        snakes=[],
-        width=consts.WIDTH,
-        height=consts.HEIGHT,
-        speed=consts.SPEED,
-        food=None,
-        scores=None,
-        host_addr="ABVD",
+            self,
+            snakes=[],
+            width=consts.WIDTH,
+            height=consts.HEIGHT,
+            speed=consts.SPEED,
+            food=None,
+            scores=None,
+            host_addr="ABVD",
     ):
         self.snakes = snakes
         self.width = width
@@ -103,7 +103,7 @@ class Game:
         self.show_scores()
         res = [snake.alive for snake in self.snakes]
         # if res.count(True) == 1 or self.scores.count(10) == 1:
-        if self.scores.count(10) == 1:
+        if res.count(True) == 0 or self.scores.count(10) == 1:
             try:
                 ind_alive = res.index(True)
             except ValueError:
@@ -120,20 +120,23 @@ class Game:
                 if ind_scores is not None
                 else -1
             )
+            winner_font = pygame.font.SysFont(consts.FONT, int(self.width / 10))
             if ind_final != -1:
                 winner = self.snakes[ind_final]
-                winner_font = pygame.font.SysFont(consts.FONT, int(self.width / 10))
-                winner_surf = winner_font.render(
-                    "Winner is {}".format(winner.name), True, pygame.Color(255, 0, 0)
-                )
-                winner_rect = winner_surf.get_rect()
-                winner_rect.midtop = (self.width / 2, self.height / 3)
-                self.play_surface.blit(winner_surf, winner_rect)
-                pygame.display.flip()
-                self.status = consts.STATUS_FINISHED
-                time.sleep(2)
-                pygame.quit()
-                sys.exit()
+                name = winner.name
+            else:
+                name = "nobody(("
+            winner_surf = winner_font.render(
+                "Winner is {}".format(name), True, pygame.Color(255, 0, 0)
+            )
+            winner_rect = winner_surf.get_rect()
+            winner_rect.midtop = (self.width / 2, self.height / 3)
+            self.play_surface.blit(winner_surf, winner_rect)
+            pygame.display.flip()
+            self.status = consts.STATUS_FINISHED
+            time.sleep(2)
+            pygame.quit()
+            sys.exit()
 
     def game_over(self):
         self.show_scores()
@@ -220,10 +223,10 @@ class Game:
         pre_calc_game = Game.from_dict(prev_state["state"])
 
         if (
-            last["frame_id"] == prev_state["frame_id"]
-            and player_name
-            in [snake.name for snake in pre_calc_game.snakes if snake.alive]
-            and not get_key(availability)
+                last["frame_id"] == prev_state["frame_id"]
+                and player_name
+                in [snake.name for snake in pre_calc_game.snakes if snake.alive]
+                and not get_key(availability)
         ):
             set_key(availability, True)
             pre_calc_game.calculate()
@@ -235,7 +238,6 @@ class Game:
         last = prev_state
 
         return pre_calc_game.render()
-
 
 # # crazy test
 # if __name__ == '__main__':

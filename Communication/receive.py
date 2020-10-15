@@ -1,44 +1,42 @@
 import itertools
 
-import pygame
 from redis import Redis
 import json
 
 from Classes import consts
+from Communication.communication_consts import FREE_GAMES, HOST, REDIS_FOUND, WAITING, NEW_GAME
 
-i = 0
+i = -1
+list_ = []
 
-FLUSHED = "FLUSHED"
 
-list_ = [Redis(host="localhost", port=6379), Redis(host="localhost", port=6380)]
+def get_redis_instances():
+    return list_
 
-for db in list_:
-    try:
-        if len(db.client_list()) == 1:
-            print("Flushed redis instance")
-            db.flushdb()
-    except:
-        pass
 
-addresses = iter(itertools.cycle(list_))
+def set_redis_instances(new_list):
+    global list_
+    list_ = new_list
+    return
 
-client = next(addresses)
 
-FREE_GAMES = "FREE_GAMES"
-HOST = "HOST"
-REDIS_FOUND = "FOUND_REDIS"
-WAITING = "WAITING"
+def flush_dbs():
+    for db in list_:
+        try:
+            if len(db.client_list()) == 1:
+                print("Flushed redis instance")
+                db.flushdb()
+        except:
+            pass
 
-PLAYING = "PLAYING"
-PENDING = "PENDING"
 
-NEW_GAME = {
-    "snakes": [],
-    "master": HOST,
-    "status": "PENDING",
-    "state": None,
-    "frame_id": 0,
-}
+client = None
+
+
+def set_client(host, port):
+    global client
+    client = Redis(host=host, port=int(port))
+    return client
 
 
 def update_game_var(game_name, game_var, new_val):
@@ -54,10 +52,15 @@ def render_players(game_name, font, window, screen):
             return
         players = res["snakes"]
 
+        instances = []
         for player in players:
-            if not get_key(player):
+            alive_ = get_key(player)
+            if not alive_:
                 players.remove(player)
                 set_key(game_name, res)
+            else:
+                instances.append(alive_)
+        set_redis_instances(instances)
         if HOST in players:
             text = "Connected players: {}".format(",".join(players))
         else:
@@ -89,22 +92,32 @@ def get_players_name(game_name):
 
 def repair_client():
     global client
-    client = next(addresses)
-    if client.ping():
-        if not get_key(REDIS_FOUND):
-            set_key(REDIS_FOUND, True)
-            set_key(WAITING, True, ex=2)
-        while get_key(WAITING):
-            pass
-    else:
-        if client == list_[-1]:
-            repair_client()
+    cur_cl = None
+    global i
+    while i < len(list_):
+        i += 1
+        cur_cl = Redis(list_[i][0], list_[i][1])
+        try:
+            if cur_cl.ping():
+                break
+        except:
+            continue
+
+    if i == len(list_):
         print(
-            "All redis nodes checked, no working redis instance found, exiting the game"
+            "All possible redis nodes checked, no working redis instance found, exiting the game"
         )
         import sys
-
         sys.exit(-1)
+    else:
+        print("Connected to other working redis - ", cur_cl)
+
+    client = cur_cl
+    if not get_key(REDIS_FOUND):
+        set_key(REDIS_FOUND, True)
+        set_key(WAITING, True, ex=2)
+    while get_key(WAITING):
+        pass
 
 
 def set_key(key, data, **kwargs):
@@ -112,8 +125,8 @@ def set_key(key, data, **kwargs):
     try:
         return client.set(key, json.dumps(data), **kwargs)
     except:
-        repair_client()
         print("Failed, trying again with diff redis")
+        repair_client()
         return set_key(key, data, **kwargs)
 
 

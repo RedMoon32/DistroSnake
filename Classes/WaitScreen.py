@@ -3,7 +3,8 @@ import sys
 import pygame
 
 from Classes import consts
-from Communication.receive import render_players, get_game, PLAYING
+from Communication.receive import render_players, get_game
+from Communication.communication_consts import PLAYING
 
 
 class WaitSreen:

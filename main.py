@@ -1,6 +1,6 @@
-import itertools
+import random
+import string
 from threading import Thread
-from time import sleep
 
 from Classes.DataEnteringScreen import DataEnteringScreen
 from Classes.Game import Game
@@ -8,6 +8,7 @@ from Classes.Snake import Snake
 from Classes.HostOrPlayerScreen import HostOrPlayerScreen
 from Classes.WaitScreen import WaitSreen
 from Classes.HostScreen import HostScreen
+from Communication.communication_consts import PLAYING
 from Communication.receive import *
 
 width = consts.WIDTH
@@ -18,26 +19,22 @@ from tkinter import *
 from tkinter import messagebox
 
 set_alive_thread = None
-
 name = "HOST"
 val = True
-
 stop_sign = False
+loc_redis = '-'
+sum = 0
+frame_cont = 0
+count = 1
+dirs = ["DOWN", "RIGHT", "UP", "LEFT"]
+real_dirs = [dir for dir in dirs for i in range(count)]
+a = iter(itertools.cycle(real_dirs))
 
 
 def set_alive():
     while not stop_sign:
         if name:
-            set_key(name, val)
-
-
-sum = 0
-frame_cont = 0
-
-count = 1
-dirs = ["DOWN", "RIGHT", "UP", "LEFT"]
-real_dirs = [dir for dir in dirs for i in range(count)]
-a = iter(itertools.cycle(real_dirs))
+            set_key(name, loc_redis, ex=1)
 
 
 def play(host, player_name):
@@ -59,7 +56,7 @@ def play(host, player_name):
 
 
 def connect_to_host():
-    host = "ABVD"
+    host = None
     while host not in find_games():
         host = DataEnteringScreen(
             "Initialization window", "Enter host", width, height
@@ -71,7 +68,6 @@ def connect_to_host():
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
-        name = "OK"
         while not name:
             name = DataEnteringScreen(
                 "What is your name?", "Enter non empty name", width, height
@@ -109,7 +105,7 @@ def body_choice(ind, w, h):
 
 
 def create_host():
-    game_name = "ABVD"
+    game_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
     create_game(game_name)
     res, _ = HostScreen("Your host data", game_name, width, height).run(game_name)
     # вот здесь надо от юзеров получать змейки и кидать в массив
@@ -125,7 +121,7 @@ def create_host():
             snake.head_pos = body[0]
             snake.direction = direction
 
-    game = Game(snakes, width=width, height=height, speed=speed)
+    game = Game(snakes, width=width, height=height, speed=speed, host_addr=game_name)
     game.scores = [0 for i in game.scores]
     update_game_var(game_name, "state", game.to_dict())
     update_game_var(game_name, "status", PLAYING)
@@ -146,10 +142,48 @@ def run():
             break
 
 
-if __name__ == "__main__":
+def game_init():
+    import sys
+    global loc_redis
+    count_args = len(sys.argv) - 1
+    if count_args == 4:
+        mip, mport, iip, iport = sys.argv[1:]
+
+    elif count_args == 2:
+        mip, mport = sys.argv[1], sys.argv[2]
+        iip, iport = None, None
+
+    elif count_args == 3 and sys.argv[3] == "-i":
+        mip, mport = sys.argv[1], sys.argv[2]
+        iip, iport = mip, mport
+
+    else:
+        print(
+            "Wrong argument passing, please run the script using following command:\npython snake.py "
+            "<master ip in local network> <master redis port in local network> (-i if is master) "
+            "<your ip in local network> <your open redis port>")
+        sys.exit(-1)
+
+    try:
+        cl = set_client(mip, mport)
+        if iip and iport:
+            loc_redis = [iip, iport]
+            Redis(iip, iport).flushdb()
+            print("Flushed own redis storage")
+
+            print("Connected to redis ",cl)
+    except:
+        print("Error connecting to local Redis Instance")
+        sys.exit(-1)
+
     thread = Thread(
         target=set_alive,
     )
+    flush_dbs()
     thread.daemon = True
     thread.start()
     run()
+
+
+if __name__ == "__main__":
+    game_init()
