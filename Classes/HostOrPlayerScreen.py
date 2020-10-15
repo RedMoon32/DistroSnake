@@ -26,38 +26,42 @@ class HostOrPlayerScreen:
         move_parameter = 1 / 12 * self.height
         _width = 1 / 10 * self.width
         _length = int(0.0076 * self.height * move_parameter)
-
+        bg = pygame.image.load("./snake.jpg")
+        bg = pygame.transform.scale(bg, (self.width, self.height))
         while True:
             mouse = pygame.mouse.get_pos()
+
+            # INSIDE OF THE GAME LOOP
+            screen.blit(bg, (0, 0))
             for ev in pygame.event.get():
                 if ev.type == pygame.MOUSEBUTTONDOWN:
                     if (
-                        position * self.width
-                        <= mouse[0]
-                        <= position * 6 / 5 * self.width
-                        and position * self.height
-                        <= mouse[1]
-                        <= position * self.height + move_parameter
+                            position * self.width
+                            <= mouse[0]
+                            <= position * 6 / 5 * self.width
+                            and position * self.height
+                            <= mouse[1]
+                            <= position * self.height + move_parameter
                     ):
                         return pygame.quit()
 
                     elif (
-                        player_pos * self.width
-                        <= mouse[0]
-                        <= 2 * player_pos * self.width
-                        and player_pos * self.height
-                        <= mouse[1]
-                        <= player_pos * self.height + move_parameter
+                            player_pos * self.width
+                            <= mouse[0]
+                            <= 2 * player_pos * self.width
+                            and player_pos * self.height
+                            <= mouse[1]
+                            <= player_pos * self.height + move_parameter
                     ):
                         return True
 
                     elif (
-                        player_pos * self.width + self.width / 2
-                        <= mouse[0]
-                        <= 2 * player_pos * self.width + self.width / 2
-                        and player_pos * self.height
-                        <= mouse[1]
-                        <= player_pos * self.height + move_parameter
+                            player_pos * self.width + self.width / 2
+                            <= mouse[0]
+                            <= 2 * player_pos * self.width + self.width / 2
+                            and player_pos * self.height
+                            <= mouse[1]
+                            <= player_pos * self.height + move_parameter
                     ):
                         return False
                 if ev.type == pygame.QUIT:
