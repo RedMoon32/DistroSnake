@@ -63,16 +63,15 @@ def connect_to_host():
             "Initialization window", "Enter host", width, height
         ).run()
         if host not in find_games():
-            Tk().wm_withdraw()  # to hide the main window
+            Tk().wm_withdraw()  # tozz hide the main window
             messagebox.showinfo("Error", "Host not found, try again")
     global name
     if host is not None:
         #  по хосту подключаться, используй как хочешь
         name = None
-        name = "ok"
         while not name:
             name = DataEnteringScreen(
-                "What is your name?", "Enter non empty name", width, height
+                "Enter nickname", width, height
             ).run()
 
         connect_to_game(host, name)

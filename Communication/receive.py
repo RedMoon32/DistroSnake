@@ -169,3 +169,4 @@ def connect_to_game(game_name, player_name):
         game = get_key(game_name)
         game["snakes"].append(player_name)
         set_key(game_name, game)
+
