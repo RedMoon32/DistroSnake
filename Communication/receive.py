@@ -17,7 +17,6 @@ def get_redis_instances():
 def set_redis_instances(new_list):
     global list_
     list_ = new_list
-    list_.append(['10.91.82.106', '6380'])
     return
 
 

@@ -6,18 +6,18 @@ from Classes import consts
 
 class Snake:
     def __init__(
-        self,
-        name,
-        width=consts.WIDTH,
-        height=consts.HEIGHT,
-        head_pos=None,
-        body=None,
-        direction=None,
-        alive=True,
-        died_from_wall=False,
-        died_from_snake=False,
-        died_from_self=False,
-        color=None,
+            self,
+            name,
+            width=consts.WIDTH,
+            height=consts.HEIGHT,
+            head_pos=None,
+            body=None,
+            direction=None,
+            alive=True,
+            died_from_wall=False,
+            died_from_snake=False,
+            died_from_self=False,
+            color=None,
     ):
         self.name = name
         self.width = width
@@ -97,8 +97,8 @@ class Snake:
             elif body[0][1] < body[1][1]:
                 return random.choice(["RIGHT"])
         elif (
-            body[0][0] < self.width / 7
-            and self.height / 7 < body[0][1] < 6 * self.height / 7
+                body[0][0] < self.width / 7
+                and self.height / 7 < body[0][1] < 6 * self.height / 7
         ):
             if body[0][0] < body[1][0]:
                 return random.choice(["UP", "DOWN"])
@@ -109,8 +109,8 @@ class Snake:
             else:
                 return random.choice(["DOWN", "RIGHT"])
         elif (
-            body[0][0] < self.width / 7
-            and 6 * self.height / 7 < body[0][1] < self.height
+                body[0][0] < self.width / 7
+                and 6 * self.height / 7 < body[0][1] < self.height
         ):
             if body[0][0] < body[1][0]:
                 return random.choice(["UP"])
@@ -119,8 +119,8 @@ class Snake:
             elif body[0][1] > body[1][1]:
                 return random.choice(["RIGHT"])
         elif (
-            body[0][1] < self.height / 7
-            and self.width / 7 < body[0][0] < 6 * self.width / 7
+                body[0][1] < self.height / 7
+                and self.width / 7 < body[0][0] < 6 * self.width / 7
         ):
             if body[0][0] < body[1][0]:
                 return random.choice(["DOWN", "LEFT"])
@@ -131,8 +131,8 @@ class Snake:
             else:
                 return random.choice(["LEFT", "RIGHT", "DOWN"])
         elif (
-            self.height / 7 <= body[0][1] <= 6 * self.height / 7
-            and self.width / 7 <= body[0][0] <= 6 * self.width / 7
+                self.height / 7 <= body[0][1] <= 6 * self.height / 7
+                and self.width / 7 <= body[0][0] <= 6 * self.width / 7
         ):
             if body[0][0] < body[1][0]:
                 return random.choice(["UP", "LEFT", "DOWN"])
@@ -143,8 +143,8 @@ class Snake:
             else:
                 return random.choice(["DOWN", "LEFT", "RIGHT"])
         elif (
-            6 * self.height / 7 < body[0][1] < self.height
-            and self.width / 7 < body[0][0] < 6 * self.width / 7
+                6 * self.height / 7 < body[0][1] < self.height
+                and self.width / 7 < body[0][0] < 6 * self.width / 7
         ):
             if body[0][0] < body[1][0]:
                 return random.choice(["LEFT", "UP"])
@@ -155,8 +155,8 @@ class Snake:
             else:
                 return random.choice(["LEFT", "RIGHT"])
         elif (
-            body[0][1] < self.height / 7
-            and 6 * self.width / 7 < body[0][0] < self.width
+                body[0][1] < self.height / 7
+                and 6 * self.width / 7 < body[0][0] < self.width
         ):
             if body[0][0] < body[1][0] or body[0][1] > body[1][1]:
                 return random.choice(["LEFT", "DOWN"])
@@ -165,8 +165,8 @@ class Snake:
             elif body[0][1] < body[1][1]:
                 return random.choice(["LEFT"])
         elif (
-            6 * self.width / 7 < body[0][0] < self.width
-            and 6 * self.height / 7 > body[0][1] > self.height / 7
+                6 * self.width / 7 < body[0][0] < self.width
+                and 6 * self.height / 7 > body[0][1] > self.height / 7
         ):
             if body[0][0] < body[1][0]:
                 return random.choice(["LEFT", "DOWN", "UP"])
@@ -188,12 +188,12 @@ class Snake:
 
     def validate_direction_and_change(self):
         if any(
-            (
-                self.change_to == "RIGHT" and not self.direction == "LEFT",
-                self.change_to == "LEFT" and not self.direction == "RIGHT",
-                self.change_to == "UP" and not self.direction == "DOWN",
-                self.change_to == "DOWN" and not self.direction == "UP",
-            )
+                (
+                        self.change_to == "RIGHT" and not self.direction == "LEFT",
+                        self.change_to == "LEFT" and not self.direction == "RIGHT",
+                        self.change_to == "UP" and not self.direction == "DOWN",
+                        self.change_to == "DOWN" and not self.direction == "UP",
+                )
         ):
             self.direction = self.change_to
 
@@ -211,8 +211,8 @@ class Snake:
         self.body.insert(0, list(self.head_pos))
         if self.head_pos[0] == food_pos[0] and self.head_pos[1] == food_pos[1]:
             food_pos = [
-                random.randrange(1, screen_width / 10) * 10,
-                random.randrange(1, screen_height / 10) * 10,
+                max(50, random.randrange(1, screen_width / 10) * 10 - consts.INTEND),
+                max(50, random.randrange(1, screen_height / 10) * 10 - consts.INTEND),
             ]
             score += 1
         else:
@@ -231,10 +231,10 @@ class Snake:
         l_copy = [j for i in snakes_copy for j in i]
         l_copy.remove(self.body[0])
         if any(
-            (
-                self.head_pos[0] > screen_width - 10 or self.head_pos[0] < 0,
-                self.head_pos[1] > screen_height - 10 or self.head_pos[1] < 0,
-            )
+                (
+                        self.head_pos[0] > screen_width - 10 or self.head_pos[0] < 0,
+                        self.head_pos[1] > screen_height - 10 or self.head_pos[1] < 0,
+                )
         ):
             self.alive = False
             self.died_from_wall = True
