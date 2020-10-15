@@ -34,7 +34,7 @@ def set_alive():
 sum = 0
 frame_cont = 0
 
-count = 10
+count = 1
 dirs = ["DOWN", "RIGHT", "UP", "LEFT"]
 real_dirs = [dir for dir in dirs for i in range(count)]
 a = iter(itertools.cycle(real_dirs))

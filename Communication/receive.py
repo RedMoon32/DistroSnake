@@ -6,14 +6,23 @@ import json
 
 from Classes import consts
 
-
 i = 0
 
+FLUSHED = "FLUSHED"
+
 list_ = [Redis(host='localhost', port=6379), Redis(host='localhost', port=6380)]
+
+for db in list_:
+    try:
+        if not db.get(FLUSHED):
+            db.flushdb()
+            db.set("FLUSHED", True)
+    except:
+        pass
+
 addresses = iter(itertools.cycle(list_))
 
 client = next(addresses)
-
 
 FREE_GAMES = 'FREE_GAMES'
 HOST = "HOST"
@@ -23,7 +32,7 @@ WAITING = "WAITING"
 PLAYING = "PLAYING"
 PENDING = "PENDING"
 
-NEW_GAME = {"snakes": [], "master": HOST, "status": "PENDING", "state": None}
+NEW_GAME = {"snakes": [], "master": HOST, "status": "PENDING", "state": None, "frame_id": 0}
 
 
 def update_game_var(game_name, game_var, new_val):
@@ -75,7 +84,7 @@ def repair_client():
     if client.ping():
         if not get_key(REDIS_FOUND):
             set_key(REDIS_FOUND, True)
-            set_key(WAITING, True, ex=3)
+            set_key(WAITING, True, ex=2)
         while get_key(WAITING):
             pass
     else:
@@ -134,15 +143,3 @@ def connect_to_game(game_name, player_name):
         game = get_key(game_name)
         game["snakes"].append(player_name)
         set_key(game_name, game)
-
-
-def make_move():
-    pass
-
-
-def get_state():
-    pass
-
-
-def update_state():
-    pass

@@ -85,8 +85,8 @@ class Game:
     def find_winner(self):
         self.show_scores()
         res = [snake.alive for snake in self.snakes]
-        if res.count(True) == 1 or self.scores.count(10) == 1:
-        # if self.scores.count(10) == 1:
+        # if res.count(True) == 1 or self.scores.count(10) == 1:
+        if self.scores.count(10) == 1:
             try:
                 ind_alive = res.index(True)
             except ValueError:
@@ -190,19 +190,23 @@ class Game:
 
         availability = host_addr + "_AVAILABLE_"
         prev_state = get_game(host_addr)
-        if prev_state is None:
+        if prev_state is None or prev_state['state'] is None:
             prev_state = last
+            set_key(host_addr, prev_state)
 
         pre_calc_game = Game.from_dict(prev_state["state"])
 
         if player_name in [snake.name for snake in pre_calc_game.snakes if snake.alive] and not get_key(availability):
             set_key(availability, True, px=1500)
             pre_calc_game.calculate()
+            prev_state["frame_id"] += 1
             prev_state["state"] = pre_calc_game.to_dict()
             set_key(host_addr, prev_state)
             set_key(availability, False)
 
+
         last = prev_state
+
         return pre_calc_game.render()
 
 # # crazy test
