@@ -8,5 +8,5 @@ pip install -r requirements.txt,
 docker run -d -p 6379:6379 --name redis1 redis
 
 
-python manage.py 127.0.0.1 6379 -i
+python main.py 127.0.0.1 6379 -i
 
