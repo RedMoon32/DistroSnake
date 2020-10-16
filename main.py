@@ -57,7 +57,6 @@ def play(host, player_name):
 
 def connect_to_host():
     host = None
-    host = "abvd"
     while host not in find_games():
         host = DataEnteringScreen(
             "Initialization window", "Enter host", width, height
