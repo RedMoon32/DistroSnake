@@ -18,8 +18,8 @@ class HostOrPlayerScreen:
         smallfont = pygame.font.SysFont(consts.FONT, int(self.width / 19))
 
         quit_text = smallfont.render("Quit ", True, consts.WHITE)
-        player_text = smallfont.render("Player ", True, consts.WHITE)
-        host_text = smallfont.render(" Host ", True, consts.WHITE)
+        player_text = smallfont.render("Connect", True, consts.WHITE)
+        host_text = smallfont.render("Create", True, consts.WHITE)
 
         position = 3 / 4
         player_pos = 1 / 6
